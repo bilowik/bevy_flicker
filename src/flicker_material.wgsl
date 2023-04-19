@@ -15,12 +15,14 @@ struct FlickerMaterial {
     offset: vec2<f32>,
     size: vec2<f32>,
     ratio: vec2<f32>,
+    color: vec4<f32>,
+    mix_scalar: f32,
 }
 
 @group(1) @binding(2)
 var<uniform> flicker_material: FlickerMaterial;
 
-let ZERO: vec2<f32> = vec2<f32>(0.0, 0.0);
+//let ZERO: vec2<f32> = vec2<f32>(0.0, 0.0);
 
 @fragment
 fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
@@ -29,10 +31,5 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     let new_range = flicker_material.size;
     let uv = ((in.uv * new_range) + flicker_material.offset);
     let color = textureSample(texture, our_sampler, uv);
-    return vec4<f32>(
-	color.r + 0.5,
-	color.g,
-	color.b,
-	color.a,
-    );
+    return mix(color, flicker_material.color, flicker_material.mix_scalar);
 }

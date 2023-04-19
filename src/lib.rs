@@ -21,8 +21,6 @@ pub struct FlickerPlugin;
 #[derive(SystemSet, Debug, Hash, PartialEq, Eq, Clone, Copy)]
 pub struct FlickerSet;
 
-pub fn empty_system() {}
-
 impl Plugin for FlickerPlugin {
     fn build(&self, app: &mut App) {
         // Register the flicker mateiral as an internal asset
@@ -36,7 +34,7 @@ impl Plugin for FlickerPlugin {
         app.add_plugin(Material2dPlugin::<FlickerMaterial>::default())
             .register_asset_reflect::<FlickerMaterial>();
 
-        app.world
+        /*app.world
             .resource_mut::<Assets<FlickerMaterial>>()
             .set_untracked(
                 Handle::<FlickerMaterial>::default(),
@@ -44,8 +42,8 @@ impl Plugin for FlickerPlugin {
                     color: Color::rgb(1.0, 0.0, 1.0),
                     ..Default::default()
                 },
-            );
-
+            );*/
+            
         // Register events
         app.add_event::<FlickerStartEvent>()
             .add_event::<FlickerEndEvent>();
@@ -56,4 +54,12 @@ impl Plugin for FlickerPlugin {
         app.add_system(flicker_end.in_set(FlickerSet));
         app.add_system(flicker_tick.in_set(FlickerSet));
     }
+}
+
+pub mod prelude {
+    pub use super::{
+        events::*,
+        FlickerPlugin,
+        FlickerSet,
+    };
 }
