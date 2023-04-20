@@ -4,18 +4,19 @@ use bevy::{
 };
 use crate::{
     events::{FlickerStartEvent, FlickerEndEvent},
-    components::{NoFlicker, Flickered, ImageSave, TextureAtlasSave},
+    components::{NoFlicker, Flickered, ImageSave, TextureAtlasSave, MeshColorSave},
     flicker::FlickerMaterial,
 };
 
 pub fn flicker_start(
-    query: Query<AnyOf<((&Handle<Image>, &Sprite), (&Handle<TextureAtlas>, &TextureAtlasSprite))>, Without<NoFlicker>>,
+    query: Query<AnyOf<((&Handle<Image>, &Sprite), (&Handle<TextureAtlas>, &TextureAtlasSprite), (&Mesh2dHandle, &Handle<ColorMaterial>))>, Without<NoFlicker>>,
     mut flicker_materials: ResMut<Assets<FlickerMaterial>>,
     mut flicker_start_events: EventReader<FlickerStartEvent>,
     mut meshes: ResMut<Assets<Mesh>>,
     images: Res<Assets<Image>>,
     atlases: Res<Assets<TextureAtlas>>,
     mut commands: Commands,
+    mut color_materials: ResMut<Assets<ColorMaterial>>,
 ) {
     for e in flicker_start_events.iter() {
     
@@ -71,6 +72,29 @@ pub fn flicker_start(
                 continue
             }
         }
+        else if let Ok(color_material_handle) = query.get_component::<Handle<ColorMaterial>>(e.entity) {
+            if let Some(orig_color) = color_materials.get(color_material_handle).map(|c| c.color).or(Some(Color::WHITE)) {
+                let flicker_color = Color::rgba(
+                    (orig_color.r() * (1.0 - e.mix_scalar)) + (e.color.r() * e.mix_scalar), 
+                    (orig_color.g() * (1.0 - e.mix_scalar)) + (e.color.g() * e.mix_scalar), 
+                    (orig_color.b() * (1.0 - e.mix_scalar)) + (e.color.b() * e.mix_scalar), 
+                    (orig_color.a() * (1.0 - e.mix_scalar)) + (e.color.a() * e.mix_scalar), 
+                );
+                if let Some(mut entity_commands) = commands.get_entity(e.entity) {
+                    entity_commands
+                        .remove::<Handle<ColorMaterial>>()
+                        .insert((
+                            MeshColorSave(orig_color),
+                            color_materials.add(ColorMaterial { color: flicker_color, texture: None }),
+                            Flickered::with_secs(e.secs)
+                    ));
+
+                }
+                
+
+            }
+            continue; 
+        }
         else {
             warn!("Attempted to flicker on a despawned or sprite-less entity {:?}", e.entity);
             continue
@@ -88,7 +112,8 @@ pub fn flicker_start(
 }
 
 pub fn flicker_end(
-    query: Query<(&Handle<FlickerMaterial>, AnyOf<(&ImageSave, &TextureAtlasSave)>), Without<NoFlicker>>,
+    query: Query< AnyOf<(&Handle<FlickerMaterial>, AnyOf<(&ImageSave, &TextureAtlasSave)>, &MeshColorSave)>>,
+    mut color_materials: ResMut<Assets<ColorMaterial>>,
     mut flicker_end_events: EventReader<FlickerEndEvent>,
     mut commands: Commands,
 ) {
@@ -110,6 +135,17 @@ pub fn flicker_end(
                         .remove::<TextureAtlasSave>()
                         .remove::<Handle<FlickerMaterial>>();
                 }
+            }
+        }
+        else if let Ok(MeshColorSave(orig_color)) = query.get_component::<MeshColorSave>(e.entity) {
+            if let Some(mut entity_commands) = commands.get_entity(e.entity) {
+                entity_commands
+                    .remove::<Flickered>()
+                    .remove::<MeshColorSave>()
+                    .remove::<Handle<ColorMaterial>>()
+                    .insert(color_materials.add(ColorMaterial { color: *orig_color, texture: None }));
+
+
             }
         }
         else {

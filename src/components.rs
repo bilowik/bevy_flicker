@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
 
-
 #[derive(Component)]
 pub struct Flickered(pub Timer);
 
@@ -39,4 +38,10 @@ pub struct ImageSave(pub Handle<Image>);
 #[derive(Component, Debug, Default, Reflect, FromReflect)]
 #[reflect(Component)]
 pub struct TextureAtlasSave(pub Handle<TextureAtlas>);
+
+/// Used to temporarily store the original color of a mesh that is flickering.
+/// Flickering a mesh involves changing its underlying ColorMaterial
+#[derive(Component, Debug, Default, Reflect, FromReflect)]
+#[reflect(Component)]
+pub struct MeshColorSave(pub Color);
 
