@@ -6,10 +6,16 @@ use crate::{
     events::{FlickerStartEvent, FlickerEndEvent},
     components::{NoFlicker, Flickered, ImageSave, TextureAtlasSave, MeshColorSave},
     flicker::FlickerMaterial,
+    config::FlickerPluginConfig,
 };
 
+// Option is needed for the AnyOfs below bc in the case of overlapping flickering, there will be
+// no Image or TextureAtlas handle, so the query will not give us what we need.
+// TODO: Maybe break apart the query for simplicity?
 pub fn flicker_start(
-    query: Query<AnyOf<((&Handle<Image>, &Sprite), (&Handle<TextureAtlas>, &TextureAtlasSprite), (&Mesh2dHandle, &Handle<ColorMaterial>))>, Without<NoFlicker>>,
+    query: Query<AnyOf<((Option<&Handle<Image>>, &Sprite), (Option<&Handle<TextureAtlas>>, &TextureAtlasSprite), (&Mesh2dHandle, &Handle<ColorMaterial>))>, Without<NoFlicker>>,
+    flicker_saves: Query<AnyOf<(&MeshColorSave, &ImageSave, &TextureAtlasSave)>>,
+    //mesh_color_saves: Query<&MeshColorSave>,
     mut flicker_materials: ResMut<Assets<FlickerMaterial>>,
     mut flicker_start_events: EventReader<FlickerStartEvent>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -17,11 +23,18 @@ pub fn flicker_start(
     atlases: Res<Assets<TextureAtlas>>,
     mut commands: Commands,
     mut color_materials: ResMut<Assets<ColorMaterial>>,
+    flickereds: Query<&Flickered>,
+    config: Res<FlickerPluginConfig>,
 ) {
     for e in flicker_start_events.iter() {
-    
-        let (material, mesh_size) = if let (Ok(handle), Ok(sprite)) = (query.get_component::<Handle<Image>>(e.entity), query.get_component::<Sprite>(e.entity)) {
-            if let Some(image) = images.get(handle) {
+        if flickereds.get(e.entity).is_ok() && config.ignore_overlap() {
+            // We ignore this flicker event entirely.
+            continue;
+        }
+            
+        // Get image handle or image handle save
+        let (material, mesh_size) = if let (Ok(handle), Ok(sprite)) = (query.get_component::<Handle<Image>>(e.entity).cloned().or(flicker_saves.get_component::<ImageSave>(e.entity).map(|img_save| img_save.0.clone())), query.get_component::<Sprite>(e.entity)) {
+            if let Some(image) = images.get(&handle) {
                 commands.entity(e.entity)
                     .insert(ImageSave(handle.clone()))
                     .remove::<Handle<Image>>();
@@ -33,9 +46,10 @@ pub fn flicker_start(
                 continue;
             }
         }
-        else if let (Ok(handle), Ok(tas)) = (query.get_component::<Handle<TextureAtlas>>(e.entity), query.get_component::<TextureAtlasSprite>(e.entity)) {
+        // Get texture atlas or texture atlas save
+        else if let (Ok(handle), Ok(tas)) = (query.get_component::<Handle<TextureAtlas>>(e.entity).cloned().or(flicker_saves.get_component::<TextureAtlasSave>(e.entity).map(|s| s.0.clone())), query.get_component::<TextureAtlasSprite>(e.entity)) {
             let index = query.get_component::<TextureAtlasSprite>(e.entity).unwrap().index;
-            if let Some((atlas, img_handle)) = atlases.get(handle).and_then(|atlas| Some((atlas, atlas.texture.clone()))) {
+            if let Some((atlas, img_handle)) = atlases.get(&handle).and_then(|atlas| Some((atlas, atlas.texture.clone()))) {
                 if let Some(img) = images.get(&img_handle) {
                     let curr_rect = atlas.textures.get(index).copied().unwrap_or(Rect::new(0.0, 0.0, 0.0, 0.0));
                     let rect_size = Vec2::new(curr_rect.width(), curr_rect.height());
@@ -73,25 +87,23 @@ pub fn flicker_start(
             }
         }
         else if let Ok(color_material_handle) = query.get_component::<Handle<ColorMaterial>>(e.entity) {
-            if let Some(orig_color) = color_materials.get(color_material_handle).map(|c| c.color).or(Some(Color::WHITE)) {
-                let flicker_color = Color::rgba(
-                    (orig_color.r() * (1.0 - e.mix_scalar)) + (e.color.r() * e.mix_scalar), 
-                    (orig_color.g() * (1.0 - e.mix_scalar)) + (e.color.g() * e.mix_scalar), 
-                    (orig_color.b() * (1.0 - e.mix_scalar)) + (e.color.b() * e.mix_scalar), 
-                    (orig_color.a() * (1.0 - e.mix_scalar)) + (e.color.a() * e.mix_scalar), 
-                );
-                if let Some(mut entity_commands) = commands.get_entity(e.entity) {
-                    entity_commands
-                        .remove::<Handle<ColorMaterial>>()
-                        .insert((
-                            MeshColorSave(orig_color),
-                            color_materials.add(ColorMaterial { color: flicker_color, texture: None }),
-                            Flickered::with_secs(e.secs)
-                    ));
+            // Get the mesh color save color if it was already flickered or get the current color
+            // material color, or if that fails default to WHITE.
+            let orig_color = flicker_saves.get_component::<MeshColorSave>(e.entity).map(|x| x.0).ok().or(color_materials.get(color_material_handle).map(|x| x.color)).unwrap_or(Color::WHITE);
 
-                }
-                
-
+            let flicker_color = Color::rgba(
+                (orig_color.r() * (1.0 - e.mix_scalar)) + (e.color.r() * e.mix_scalar), 
+                (orig_color.g() * (1.0 - e.mix_scalar)) + (e.color.g() * e.mix_scalar), 
+                (orig_color.b() * (1.0 - e.mix_scalar)) + (e.color.b() * e.mix_scalar), 
+                (orig_color.a() * (1.0 - e.mix_scalar)) + (e.color.a() * e.mix_scalar), 
+            );
+            if let Some(mut entity_commands) = commands.get_entity(e.entity) {
+                entity_commands
+                    .insert((
+                        MeshColorSave(orig_color),
+                        color_materials.add(ColorMaterial { color: flicker_color, texture: None }),
+                        Flickered::with_secs(e.secs)
+                ));
             }
             continue; 
         }
