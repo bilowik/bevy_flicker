@@ -6,14 +6,16 @@ use bevy::render::{color::Color, prelude::Shader};
 
 use bevy::sprite::Material2dPlugin;
 
-mod components;
-mod events;
-mod flicker;
-mod systems;
+pub mod components;
+pub mod events;
+pub mod flicker;
+pub mod systems;
+pub mod config;
 
 use flicker::{FlickerMaterial, FLICKER_MATERIAL_SHADER_HANDLE};
 use events::{FlickerStartEvent, FlickerEndEvent};
 use systems::{flicker_start, flicker_end, flicker_tick};
+use config::FlickerPluginConfig;
 
 #[derive(Default)]
 pub struct FlickerPlugin;
@@ -53,6 +55,8 @@ impl Plugin for FlickerPlugin {
         app.add_system(flicker_start.in_set(FlickerSet));
         app.add_system(flicker_end.in_set(FlickerSet));
         app.add_system(flicker_tick.in_set(FlickerSet));
+        app.init_resource::<FlickerPluginConfig>();
+
     }
 }
 
@@ -60,6 +64,7 @@ pub mod prelude {
     pub use super::{
         events::*,
         FlickerPlugin,
+        config::FlickerPluginConfig,
         FlickerSet,
     };
 }
