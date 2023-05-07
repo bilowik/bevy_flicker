@@ -9,13 +9,10 @@ use crate::{
     config::FlickerPluginConfig,
 };
 
-// Option is needed for the AnyOfs below bc in the case of overlapping flickering, there will be
-// no Image or TextureAtlas handle, so the query will not give us what we need.
-// TODO: Maybe break apart the query for simplicity?
 pub fn flicker_start(
-    query: Query<AnyOf<((Option<&Handle<Image>>, &Sprite), (Option<&Handle<TextureAtlas>>, &TextureAtlasSprite), (&Mesh2dHandle, &Handle<ColorMaterial>))>, Without<NoFlicker>>,
-    flicker_saves: Query<AnyOf<(&MeshColorSave, &ImageSave, &TextureAtlasSave)>>,
-    //mesh_color_saves: Query<&MeshColorSave>,
+    sprites: Query<(AnyOf<(&Handle<Image>, &ImageSave)>, &Sprite), Without<NoFlicker>>,
+    tass: Query<(AnyOf<(&Handle<TextureAtlas>, &TextureAtlasSave)>, &TextureAtlasSprite), Without<NoFlicker>>,
+    mesh_with_color_materials: Query<(&Mesh2dHandle, &Handle<ColorMaterial>, Option<&MeshColorSave>), Without<NoFlicker>>,
     mut flicker_materials: ResMut<Assets<FlickerMaterial>>,
     mut flicker_start_events: EventReader<FlickerStartEvent>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -33,7 +30,7 @@ pub fn flicker_start(
         }
             
         // Get image handle or image handle save
-        let (material, mesh_size) = if let (Ok(handle), Ok(sprite)) = (query.get_component::<Handle<Image>>(e.entity).cloned().or(flicker_saves.get_component::<ImageSave>(e.entity).map(|img_save| img_save.0.clone())), query.get_component::<Sprite>(e.entity)) {
+        let (material, mesh_size) = if let (Ok(handle), Ok(sprite)) = (sprites.get_component::<Handle<Image>>(e.entity).cloned().or(sprites.get_component::<ImageSave>(e.entity).map(|img_save| img_save.0.clone())), sprites.get_component::<Sprite>(e.entity)) {
             if let Some(image) = images.get(&handle) {
                 commands.entity(e.entity)
                     .insert(ImageSave(handle.clone()))
@@ -47,8 +44,8 @@ pub fn flicker_start(
             }
         }
         // Get texture atlas or texture atlas save
-        else if let (Ok(handle), Ok(tas)) = (query.get_component::<Handle<TextureAtlas>>(e.entity).cloned().or(flicker_saves.get_component::<TextureAtlasSave>(e.entity).map(|s| s.0.clone())), query.get_component::<TextureAtlasSprite>(e.entity)) {
-            let index = query.get_component::<TextureAtlasSprite>(e.entity).unwrap().index;
+        else if let (Ok(handle), Ok(tas)) = (tass.get_component::<Handle<TextureAtlas>>(e.entity).cloned().or(tass.get_component::<TextureAtlasSave>(e.entity).map(|s| s.0.clone())), tass.get_component::<TextureAtlasSprite>(e.entity)) {
+            let index = tass.get_component::<TextureAtlasSprite>(e.entity).unwrap().index;
             if let Some((atlas, img_handle)) = atlases.get(&handle).and_then(|atlas| Some((atlas, atlas.texture.clone()))) {
                 if let Some(img) = images.get(&img_handle) {
                     let curr_rect = atlas.textures.get(index).copied().unwrap_or(Rect::new(0.0, 0.0, 0.0, 0.0));
@@ -86,10 +83,10 @@ pub fn flicker_start(
                 continue
             }
         }
-        else if let Ok(color_material_handle) = query.get_component::<Handle<ColorMaterial>>(e.entity) {
+        else if let Ok(color_material_handle) = mesh_with_color_materials.get_component::<Handle<ColorMaterial>>(e.entity) {
             // Get the mesh color save color if it was already flickered or get the current color
             // material color, or if that fails default to WHITE.
-            let orig_color = flicker_saves.get_component::<MeshColorSave>(e.entity).map(|x| x.0).ok().or(color_materials.get(color_material_handle).map(|x| x.color)).unwrap_or(Color::WHITE);
+            let orig_color = mesh_with_color_materials.get_component::<MeshColorSave>(e.entity).map(|x| x.0).ok().or(color_materials.get(color_material_handle).map(|x| x.color)).unwrap_or(Color::WHITE);
 
             let flicker_color = Color::rgba(
                 (orig_color.r() * (1.0 - e.mix_scalar)) + (e.color.r() * e.mix_scalar), 
