@@ -60,5 +60,5 @@ impl Plugin for FlickerPlugin {
 }
 
 pub mod prelude {
-    pub use super::{config::FlickerPluginConfig, events::*, FlickerPlugin, FlickerSet};
+    pub use super::{config::{FlickerPluginConfig, FlickerOverlapAction}, events::*, FlickerPlugin, FlickerSet};
 }
