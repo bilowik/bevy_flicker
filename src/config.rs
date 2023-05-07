@@ -14,10 +14,9 @@ impl Default for FlickerOverlapAction {
     }
 }
 
-
 #[derive(Resource, Default)]
 pub struct FlickerPluginConfig {
-   pub overlap_action: FlickerOverlapAction, 
+    pub overlap_action: FlickerOverlapAction,
 }
 
 impl FlickerPluginConfig {

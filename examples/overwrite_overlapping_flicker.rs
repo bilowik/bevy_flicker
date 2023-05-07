@@ -11,7 +11,14 @@ const MIX_SCALAR: f32 = 0.10;
 #[derive(Component, Default)]
 pub struct Marker;
 
-const RANDOM_COLORS: [Color; 6] = [Color::WHITE, Color::BLUE, Color::RED, Color::YELLOW, Color::BLACK, Color::PURPLE];
+const RANDOM_COLORS: [Color; 6] = [
+    Color::WHITE,
+    Color::BLUE,
+    Color::RED,
+    Color::YELLOW,
+    Color::BLACK,
+    Color::PURPLE,
+];
 
 fn main() {
     App::new()
@@ -47,13 +54,13 @@ fn setup(
 }
 
 fn tick(
-    query: Query<Entity, With<Marker>>, 
+    query: Query<Entity, With<Marker>>,
     mut event_writer: EventWriter<FlickerStartEvent>,
     mut counter: Local<usize>,
 ) {
     *counter = *counter + 1;
     if *counter == RANDOM_COLORS.as_slice().len() {
-       *counter = 0; 
+        *counter = 0;
     }
     for e in query.iter() {
         event_writer.send(

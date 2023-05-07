@@ -32,9 +32,7 @@ impl FlickerStartEvent {
     }
 }
 
-
 #[derive(Debug)]
 pub struct FlickerEndEvent {
-    pub entity: Entity
+    pub entity: Entity,
 }
-

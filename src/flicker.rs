@@ -1,8 +1,8 @@
 use bevy::{
     prelude::*,
-    sprite::Material2d,
-    render::render_resource::{AsBindGroup, ShaderRef},
     reflect::TypeUuid,
+    render::render_resource::{AsBindGroup, ShaderRef},
+    sprite::Material2d,
 };
 
 pub const FLICKER_MATERIAL_SHADER_HANDLE: HandleUntyped =
@@ -14,32 +14,31 @@ pub struct FlickerMaterial {
     #[texture(0)]
     #[sampler(1)]
     pub source_image: Handle<Image>,
-    
+
     /// A percentage, min-max, between 0.0 and 1.0
     /// Defines the top left corner of where to start pulling
     /// pixels from the sprite sheet
     #[uniform(2)]
     pub offset: Vec2,
-    
+
     /// A percentage, min-max, between 0.0 and 1.0
     /// Defines how large the are is to pull pixels from
     /// the sprite sheet
     #[uniform(2)]
     pub size: Vec2,
-    
+
     /// A percentage, min-max, between 0.0 and 1.0
     /// TODO: Unused, what was this meant for?
     #[uniform(2)]
     pub ratio: Vec2,
 
     /// The color to flicker, will be mixed with each pixel
-    #[uniform(2)] 
+    #[uniform(2)]
     pub color: Color,
-    
+
     /// The third parameter passed to the `mix()` wgsl function
     #[uniform(2)]
     pub mix_scalar: f32,
-
 }
 
 impl Material2d for FlickerMaterial {
@@ -47,7 +46,6 @@ impl Material2d for FlickerMaterial {
         FLICKER_MATERIAL_SHADER_HANDLE.typed().into()
     }
 }
-
 
 impl Default for FlickerMaterial {
     fn default() -> Self {
