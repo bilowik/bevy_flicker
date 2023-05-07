@@ -1,5 +1,5 @@
 use crate::{
-    components::{Flickered, ImageSave, MeshColorSave, NoFlicker, TextureAtlasSave},
+    components::{Flickered, ImageSave, MeshColorSave, NoFlicker, TextureAtlasSave, RepeatingFlicker},
     config::FlickerPluginConfig,
     events::{FlickerEndEvent, FlickerStartEvent},
     flicker::FlickerMaterial,
@@ -241,3 +241,19 @@ pub fn flicker_tick(
         }
     }
 }
+
+
+pub fn repeating_flicker_tick(
+    mut repeating_flickers: Query<(Entity, &mut RepeatingFlicker)>,
+    mut flicker_start_event_writer: EventWriter<FlickerStartEvent>,
+    time: Res<Time>,
+) {
+    for (entity, mut repeating_flicker) in repeating_flickers.iter_mut() {
+        repeating_flicker.timer.tick(time.delta());
+        if repeating_flicker.timer.just_finished() {
+            // The pause has finished, flicker again
+            flicker_start_event_writer.send(repeating_flicker.generate_start_event(entity)); 
+        }
+    }
+}
+
