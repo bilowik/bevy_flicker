@@ -1,8 +1,8 @@
 use bevy::app::{App, Plugin};
-use bevy::asset::{load_internal_asset, AddAsset, Assets, Handle};
+use bevy::asset::{load_internal_asset, AddAsset};
 use bevy::ecs::prelude::IntoSystemConfig;
 use bevy::ecs::schedule::SystemSet;
-use bevy::render::{color::Color, prelude::Shader};
+use bevy::render::prelude::Shader;
 
 use bevy::sprite::Material2dPlugin;
 
