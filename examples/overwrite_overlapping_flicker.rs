@@ -52,10 +52,11 @@ fn tick(
     }
     for e in query.iter() {
         event_writer.send(
-            FlickerStartEvent::new(e)
+            FlickerStartEvent::builder(e)
                 .with_secs(FLICKER_LENGTH)
                 .with_mix_scalar(MIX_SCALAR)
-                .with_color(RANDOM_COLORS[*counter]),
+                .with_color(RANDOM_COLORS[*counter])
+                .build(),
         );
     }
 }

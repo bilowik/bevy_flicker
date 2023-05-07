@@ -1,9 +1,9 @@
-use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
+use bevy::prelude::*;
 use bevy_flicker::prelude::*;
 
 const FIXED_TIMESTEP: f32 = 1.0;
 const FLICKER_LENGTH: f32 = 0.5;
-const MIX_SCALAR: f32 = 0.25;
+const MIX_SCALAR: f32 = 0.15;
 
 #[derive(Component, Default)]
 pub struct Marker;
@@ -20,15 +20,20 @@ fn main() {
 
 fn setup(
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    asset_server: Res<AssetServer>,
+    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
+    let texture = asset_server.load("asteroid_sheet_test.png");
+    let atlas = texture_atlases.add(TextureAtlas::from_grid(texture, Vec2::new(64.0, 64.0), 1, 4, None, None));
     commands.spawn(Camera2dBundle::default());
     commands
-        .spawn(MaterialMesh2dBundle {
-            mesh: meshes.add(Mesh::from(shape::Quad::default())).into(),
-            transform: Transform::default().with_scale(Vec3::splat(128.0)),
-            material: materials.add(ColorMaterial::from(Color::RED)),
+        .spawn(SpriteSheetBundle {
+            sprite: TextureAtlasSprite {
+                index: 2,
+                ..default()
+            },
+            transform: Transform::default().with_scale(Vec3::splat(8.0)),
+            texture_atlas: atlas,
             ..default()
         })
         .insert(Marker);
@@ -41,7 +46,7 @@ fn tick(query: Query<Entity, With<Marker>>, mut event_writer: EventWriter<Flicke
             FlickerStartEvent::builder(e)
                 .with_secs(FLICKER_LENGTH)
                 .with_mix_scalar(MIX_SCALAR)
-                .with_color(Color::BLUE)
+                .with_color(Color::RED)
                 .build(),
         );
     }

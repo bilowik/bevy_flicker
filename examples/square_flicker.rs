@@ -36,10 +36,11 @@ fn tick(query: Query<Entity, With<Marker>>, mut event_writer: EventWriter<Flicke
     for e in query.iter() {
         info!("Flickering the square!");
         event_writer.send(
-            FlickerStartEvent::new(e)
+            FlickerStartEvent::builder(e)
                 .with_secs(FLICKER_LENGTH)
                 .with_mix_scalar(MIX_SCALAR)
-                .with_color(Color::BLUE),
+                .with_color(Color::BLUE)
+                .build(),
         );
     }
 }
