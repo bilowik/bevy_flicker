@@ -1,7 +1,4 @@
-use bevy::{
-    prelude::*,
-    sprite::{MaterialMesh2dBundle, Mesh2dHandle},
-};
+use bevy::prelude::*;
 use bevy_flicker::prelude::*;
 
 const FIXED_TIMESTEP: f32 = 1.0;
@@ -23,18 +20,9 @@ fn main() {
 
 fn setup(
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>,
 ) {
     commands.spawn(Camera2dBundle::default());
-    /*commands.spawn(MaterialMesh2dBundle {
-        mesh: meshes.add(Mesh::from(shape::Quad::default())).into(),
-        transform: Transform::default().with_scale(Vec3::splat(128.0)),
-        material: materials.add(ColorMaterial::from(Color::PURPLE)),
-        ..default()
-    })
-    .insert(Marker);*/
     commands
         .spawn(SpriteBundle {
             texture: asset_server.load("asteroid5.png"),
