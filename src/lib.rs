@@ -1,3 +1,10 @@
+//! This plugin facilitates creating a brief overlay/mix of a specific color over a sprite or mesh.
+//!
+//! To trigger a flicker, you can send a [FlickerStartEvent], which will contain the parameters
+//! that dictate the color, length, and strength of the flicker. 
+//!
+//! Included is also a [RepeatingFlicker] component that will repeat a flicker on a timer.
+
 use bevy::app::{App, Plugin};
 use bevy::asset::{load_internal_asset, AddAsset};
 use bevy::ecs::prelude::IntoSystemConfig;
@@ -10,7 +17,7 @@ pub mod components;
 pub mod config;
 pub mod events;
 pub mod flicker;
-pub mod systems;
+mod systems;
 
 use config::FlickerPluginConfig;
 use events::{FlickerEndEvent, FlickerStartEvent};

@@ -17,6 +17,7 @@ pub struct FlickerMaterial {
 
     /// A percentage, min-max, between 0.0 and 1.0
     /// Defines the top left corner of where to start pulling
+    /// This 
     /// pixels from the sprite sheet
     #[uniform(2)]
     pub offset: Vec2,

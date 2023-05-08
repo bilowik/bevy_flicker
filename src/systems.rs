@@ -6,7 +6,7 @@ use crate::{
 };
 use bevy::{prelude::*, sprite::Mesh2dHandle};
 
-pub fn flicker_start(
+pub(crate) fn flicker_start(
     sprites: Query<(AnyOf<(&Handle<Image>, &ImageSave)>, &Sprite), Without<NoFlicker>>,
     tass: Query<
         (
@@ -177,7 +177,7 @@ pub fn flicker_start(
     }
 }
 
-pub fn flicker_end(
+pub(crate) fn flicker_end(
     query: Query<
         AnyOf<(
             &Handle<FlickerMaterial>,
@@ -229,7 +229,7 @@ pub fn flicker_end(
     }
 }
 
-pub fn flicker_tick(
+pub(crate) fn flicker_tick(
     mut flickered: Query<(Entity, &mut Flickered)>,
     mut flicker_end_events: EventWriter<FlickerEndEvent>,
     time: Res<Time>,
@@ -243,7 +243,7 @@ pub fn flicker_tick(
 }
 
 
-pub fn repeating_flicker_tick(
+pub(crate) fn repeating_flicker_tick(
     mut repeating_flickers: Query<(Entity, &mut RepeatingFlicker)>,
     mut flicker_start_event_writer: EventWriter<FlickerStartEvent>,
     time: Res<Time>,

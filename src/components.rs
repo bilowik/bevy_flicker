@@ -17,7 +17,7 @@ impl Flickered {
     }
 }
 
-// An entity with this component will not react to flicker events
+/// An entity with this component will not react to flicker events
 #[derive(Component, Debug, Default, Reflect, FromReflect)]
 #[reflect(Component)]
 pub struct NoFlicker;
@@ -26,19 +26,19 @@ pub struct NoFlicker;
 /// such as when a shader is being applied in place (in the case of flickering)
 #[derive(Component, Debug, Default, Reflect, FromReflect)]
 #[reflect(Component)]
-pub struct ImageSave(pub Handle<Image>);
+pub(crate) struct ImageSave(pub Handle<Image>);
 
 /// Used to temporarily store image handles that are not being used at the moment on a component
 /// such as when a shader is being applied in place (in the case of flickering)
 #[derive(Component, Debug, Default, Reflect, FromReflect)]
 #[reflect(Component)]
-pub struct TextureAtlasSave(pub Handle<TextureAtlas>);
+pub(crate) struct TextureAtlasSave(pub Handle<TextureAtlas>);
 
 /// Used to temporarily store the original color of a mesh that is flickering.
 /// Flickering a mesh involves changing its underlying ColorMaterial
 #[derive(Component, Debug, Default, Reflect, FromReflect)]
 #[reflect(Component)]
-pub struct MeshColorSave(pub Color);
+pub(crate) struct MeshColorSave(pub Color);
 
 
 #[derive(Component, Reflect, FromReflect)]
