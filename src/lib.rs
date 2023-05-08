@@ -36,16 +36,6 @@ impl Plugin for FlickerPlugin {
         app.add_plugin(Material2dPlugin::<FlickerMaterial>::default())
             .register_asset_reflect::<FlickerMaterial>();
 
-        /*app.world
-        .resource_mut::<Assets<FlickerMaterial>>()
-        .set_untracked(
-            Handle::<FlickerMaterial>::default(),
-            FlickerMaterial {
-                color: Color::rgb(1.0, 0.0, 1.0),
-                ..Default::default()
-            },
-        );*/
-
         // Register events
         app.add_event::<FlickerStartEvent>()
             .add_event::<FlickerEndEvent>();
