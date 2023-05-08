@@ -13,7 +13,7 @@ pub const FLICKER_MATERIAL_SHADER_HANDLE: HandleUntyped =
 pub struct FlickerMaterial {
     #[texture(0)]
     #[sampler(1)]
-    pub source_image: Handle<Image>,
+    pub source_image: Option<Handle<Image>>,
 
     /// A percentage, min-max, between 0.0 and 1.0
     /// Defines the top left corner of where to start pulling

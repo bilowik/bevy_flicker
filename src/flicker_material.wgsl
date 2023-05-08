@@ -31,5 +31,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     let new_range = flicker_material.size;
     let uv = ((in.uv * new_range) + flicker_material.offset);
     let color = textureSample(texture, our_sampler, uv);
-    return mix(color, flicker_material.color, flicker_material.mix_scalar);
+
+    // Return the flicker color except keep the alpha consistent with the underlying texture
+    return vec4<f32>(flicker_material.color.r, flicker_material.color.g, flicker_material.color.b, min(flicker_material.color.a, color.a));
 }

@@ -41,7 +41,7 @@ fn tick(query: Query<Entity, With<Marker>>, mut event_writer: EventWriter<Flicke
             FlickerStartEvent::builder(e)
                 .with_secs(FLICKER_LENGTH)
                 .with_mix_scalar(MIX_SCALAR)
-                .with_color(Color::BLUE)
+                .with_color(Color::rgba(0.0, 0.0, 1.0, 0.5))
                 .build(),
         );
     }

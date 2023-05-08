@@ -25,8 +25,7 @@ fn setup(
     commands.spawn(Camera2dBundle::default());
     commands
         .spawn(SpriteBundle {
-            texture: asset_server.load("asteroid5.png"),
-            transform: Transform::default().with_scale(Vec3::splat(8.0)),
+            texture: asset_server.load("asteroid_round.png"),
             ..default()
         })
         .insert(Marker);
@@ -39,7 +38,7 @@ fn tick(query: Query<Entity, With<Marker>>, mut event_writer: EventWriter<Flicke
             FlickerStartEvent::builder(e)
                 .with_secs(FLICKER_LENGTH)
                 .with_mix_scalar(MIX_SCALAR)
-                .with_color(Color::BLUE)
+                .with_color(Color::rgba(0.0, 0.0, 1.0, 0.2))
                 .build(),
         );
     }

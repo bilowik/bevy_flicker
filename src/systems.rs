@@ -4,7 +4,7 @@ use crate::{
     events::{FlickerEndEvent, FlickerStartEvent},
     flicker::FlickerMaterial,
 };
-use bevy::{prelude::*, sprite::Mesh2dHandle};
+use bevy::{prelude::*, sprite::{Mesh2dHandle, MaterialMesh2dBundle}};
 
 pub(crate) fn flicker_start(
     sprites: Query<(AnyOf<(&Handle<Image>, &ImageSave)>, &Sprite), Without<NoFlicker>>,
@@ -50,17 +50,9 @@ pub(crate) fn flicker_start(
             sprites.get_component::<Sprite>(e.entity),
         ) {
             if let Some(image) = images.get(&handle) {
-                commands
-                    .entity(e.entity)
-                    .insert(ImageSave(handle.clone()))
-                    .remove::<Handle<Image>>();
-                info!(
-                    "Flicker image size: {:?}",
-                    sprite.custom_size.unwrap_or(image.size())
-                );
                 (
                     FlickerMaterial {
-                        source_image: handle.clone(),
+                        source_image: Some(handle.clone()),
                         color: e.color,
                         mix_scalar: e.mix_scalar,
                         ..default()
@@ -101,12 +93,9 @@ pub(crate) fn flicker_start(
                     let offset = curr_rect.min / img_size;
                     let size = rect_size / img_size;
                     if let Some(mut entity_commands) = commands.get_entity(e.entity) {
-                        entity_commands
-                            .insert(TextureAtlasSave(handle.clone()))
-                            .remove::<Handle<TextureAtlas>>();
                         (
                             FlickerMaterial {
-                                source_image: atlas.texture.clone(),
+                                source_image: Some(atlas.texture.clone()),
                                 offset,
                                 size,
                                 ratio,
@@ -130,34 +119,25 @@ pub(crate) fn flicker_start(
                 error!("Could not get atlas to determine which part of sprite is currently active");
                 continue;
             }
-        } else if let Ok(color_material_handle) =
-            mesh_with_color_materials.get_component::<Handle<ColorMaterial>>(e.entity)
+        } else if let Ok(mesh_handle) =
+            mesh_with_color_materials.get_component::<Mesh2dHandle>(e.entity)
         {
-            // Get the mesh color save color if it was already flickered or get the current color
-            // material color, or if that fails default to WHITE.
-            let orig_color = mesh_with_color_materials
-                .get_component::<MeshColorSave>(e.entity)
-                .map(|x| x.0)
-                .ok()
-                .or(color_materials.get(color_material_handle).map(|x| x.color))
-                .unwrap_or(Color::WHITE);
-
-            let flicker_color = Color::rgba(
-                (orig_color.r() * (1.0 - e.mix_scalar)) + (e.color.r() * e.mix_scalar),
-                (orig_color.g() * (1.0 - e.mix_scalar)) + (e.color.g() * e.mix_scalar),
-                (orig_color.b() * (1.0 - e.mix_scalar)) + (e.color.b() * e.mix_scalar),
-                (orig_color.a() * (1.0 - e.mix_scalar)) + (e.color.a() * e.mix_scalar),
-            );
-            if let Some(mut entity_commands) = commands.get_entity(e.entity) {
-                entity_commands.insert((
-                    MeshColorSave(orig_color),
-                    color_materials.add(ColorMaterial {
-                        color: flicker_color,
-                        texture: None,
-                    }),
-                    Flickered::with_secs(e.secs),
-                ));
+            if let Some(mesh) = meshes.get(&mesh_handle.0).cloned() {
+                if let Some(mut entity_commands) = commands.get_entity(e.entity) {
+                    entity_commands.with_children(|parent| {
+                        parent.spawn(MaterialMesh2dBundle {
+                            material: flicker_materials.add(FlickerMaterial {
+                                color: e.color,
+                                ..default()
+                            }),
+                            mesh: meshes.add(mesh).into(),
+                            ..default()
+                        })
+                        .insert(Flickered::with_secs(e.secs));
+                    });
+                }
             }
+            
             continue;
         } else {
             warn!(
@@ -168,11 +148,15 @@ pub(crate) fn flicker_start(
         };
 
         if let Some(mut entity_commands) = commands.get_entity(e.entity) {
-            entity_commands.insert((
-                flicker_materials.add(material),
-                Mesh2dHandle(meshes.add(Mesh::from(shape::Quad::new(mesh_size)))),
-                Flickered::with_secs(e.secs),
-            ));
+            entity_commands.with_children(|parent| {
+                parent.spawn(MaterialMesh2dBundle {
+                    material: flicker_materials.add(material),
+                    mesh: Mesh2dHandle(meshes.add(Mesh::from(shape::Quad::new(mesh_size)))),
+                    ..default()
+                })
+                .insert(Flickered::with_secs(e.secs));
+            });
+            
         }
     }
 }
@@ -232,12 +216,16 @@ pub(crate) fn flicker_end(
 pub(crate) fn flicker_tick(
     mut flickered: Query<(Entity, &mut Flickered)>,
     mut flicker_end_events: EventWriter<FlickerEndEvent>,
+    mut commands: Commands,
     time: Res<Time>,
 ) {
     for (entity, mut flickered) in flickered.iter_mut() {
         flickered.0.tick(time.delta());
         if flickered.0.finished() {
-            flicker_end_events.send(FlickerEndEvent { entity });
+            if let Some(mut entity_commands) = commands.get_entity(entity) {
+                entity_commands.despawn();
+            }
+           // flicker_end_events.send(FlickerEndEvent { entity });
         }
     }
 }
