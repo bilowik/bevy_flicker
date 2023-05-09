@@ -16,7 +16,6 @@ struct FlickerMaterial {
     size: vec2<f32>,
     ratio: vec2<f32>,
     color: vec4<f32>,
-    mix_scalar: f32,
 }
 
 @group(1) @binding(2)

@@ -36,10 +36,6 @@ pub struct FlickerMaterial {
     /// The color to flicker, will be mixed with each pixel
     #[uniform(2)]
     pub color: Color,
-
-    /// The third parameter passed to the `mix()` wgsl function
-    #[uniform(2)]
-    pub mix_scalar: f32,
 }
 
 impl Material2d for FlickerMaterial {
@@ -56,7 +52,6 @@ impl Default for FlickerMaterial {
             size: Vec2::splat(1.0),
             ratio: Vec2::splat(1.0),
             color: Color::rgba(1.0, 1.0, 1.0, 1.0),
-            mix_scalar: 1.0,
         }
     }
 }

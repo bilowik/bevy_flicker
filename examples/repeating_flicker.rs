@@ -3,7 +3,6 @@ use bevy_flicker::prelude::*;
 
 const FIXED_TIMESTEP: f32 = 1.0;
 const FLICKER_LENGTH: f32 = 0.5;
-const MIX_SCALAR: f32 = 0.05;
 
 #[derive(Component, Default)]
 pub struct Marker;
@@ -30,8 +29,7 @@ fn setup(
                 ..default()
             },
             RepeatingFlicker::builder()
-                .with_color(Color::BLUE)
-                .with_mix_scalar(0.10)
+                .with_color(Color::rgba(0.0, 0.0, 1.0, 0.2))
                 .build(),
         ));
 

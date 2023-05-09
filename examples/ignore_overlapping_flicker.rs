@@ -4,7 +4,6 @@ use bevy_flicker::prelude::*;
 
 const FIXED_TIMESTEP: f32 = 0.5;
 const FLICKER_LENGTH: f32 = 3.0;
-const MIX_SCALAR: f32 = 0.10;
 
 #[derive(Component, Default)]
 pub struct Marker;
@@ -63,7 +62,6 @@ fn tick(
         event_writer.send(
             FlickerStartEvent::builder(e)
                 .with_secs(FLICKER_LENGTH)
-                .with_mix_scalar(MIX_SCALAR)
                 .with_color(RANDOM_COLORS[*counter])
                 .build(),
         );

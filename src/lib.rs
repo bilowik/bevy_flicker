@@ -20,9 +20,9 @@ pub mod flicker;
 mod systems;
 
 use config::FlickerPluginConfig;
-use events::{FlickerEndEvent, FlickerStartEvent};
+use events::FlickerStartEvent;
 use flicker::{FlickerMaterial, FLICKER_MATERIAL_SHADER_HANDLE};
-use systems::{flicker_end, flicker_start, flicker_tick, repeating_flicker_tick};
+use systems::{flicker_start, flicker_tick, repeating_flicker_tick};
 
 #[derive(Default)]
 pub struct FlickerPlugin;
@@ -44,13 +44,11 @@ impl Plugin for FlickerPlugin {
             .register_asset_reflect::<FlickerMaterial>();
 
         // Register events
-        app.add_event::<FlickerStartEvent>()
-            .add_event::<FlickerEndEvent>();
+        app.add_event::<FlickerStartEvent>();
 
         // Register systems and systemset
         // TODO: These might need to be ordered to prevent conflicts potentially?
         app.add_system(flicker_start.in_set(FlickerSet));
-        app.add_system(flicker_end.in_set(FlickerSet));
         app.add_system(flicker_tick.in_set(FlickerSet));
         app.add_system(repeating_flicker_tick.in_set(FlickerSet));
         app.init_resource::<FlickerPluginConfig>();
