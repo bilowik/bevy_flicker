@@ -138,6 +138,12 @@ pub(crate) fn flicker_start(
                 parent.spawn(MaterialMesh2dBundle {
                     material: flicker_materials.add(material),
                     mesh: Mesh2dHandle(meshes.add(mesh)),
+                    transform: Transform {
+                        // Translation is relative to its parent, so 1.0 guarantees it is always in
+                        // front of its parent.
+                        translation: Vec3::new(0.0, 0.0, 1.0),
+                        ..default()
+                    },
                     ..default()
                 })
                 .insert(Flickered::with_secs(e.secs));
