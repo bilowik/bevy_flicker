@@ -1,3 +1,8 @@
+// In an earlier version of this plugin, the inner mechanics of flickering 
+// were much more complex and so flickering a TextureAtlasSprite was a much
+// more significant chore code-wise, which is why this example existed to test 
+// that.
+
 use bevy::prelude::*;
 use bevy_flicker::prelude::*;
 
