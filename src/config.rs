@@ -20,7 +20,7 @@ pub struct FlickerPluginConfig {
 }
 
 impl FlickerPluginConfig {
-    pub fn ignore_overlap(&self) -> bool {
+    pub(crate) fn ignore_overlap(&self) -> bool {
         match self.overlap_action {
             FlickerOverlapAction::Ignore => true,
             _ => false,

@@ -3,7 +3,32 @@
 //! To trigger a flicker, you can send a [FlickerStartEvent], which will contain the parameters
 //! that dictate the color, length, and strength of the flicker. 
 //!
-//! Included is also a [RepeatingFlicker] component that will repeat a flicker on a timer.
+//! Included is also a [RepeatingFlicker][components::RepeatingFlicker] component that will repeat a flicker on a timer.
+//!
+//! This also works on textures with alpha, the overlay takes into account the alpha of the 
+//! underlying texture and will take the lowest alpha between the two. So if a texture has pixels
+//! with an alpha of 0.0 and the overlay color has an alpha of 0.3, then the overlay above those pixels 
+//! will also have an alpha of 0.0.
+//!
+//! See more, complete examples here <https://github.com/bilowik/bevy_flicker/tree/main/examples>
+//!
+//!
+//! ```no_run
+//! use bevy_flicker::prelude::*;
+//! 
+//! fn tick(query: Query<Entity>, mut event_writer: EventWriter<FlickerStartEvent>) {
+//!     for e in query.iter() {
+//!         event_writer.send(
+//!             FlickerStartEvent::builder(e)
+//!                 .with_secs(0.5)
+//!                 .with_color(Color::rgba(0.0, 0.0, 1.0, 0.2))
+//!                 .build(),
+//!         );
+//!     }
+//! }
+//!
+//!
+//! ```
 
 use bevy::app::{App, Plugin};
 use bevy::asset::{load_internal_asset, AddAsset};
@@ -16,7 +41,7 @@ use bevy::sprite::Material2dPlugin;
 pub mod components;
 pub mod config;
 pub mod events;
-pub mod flicker;
+mod flicker;
 mod systems;
 
 use config::FlickerPluginConfig;
