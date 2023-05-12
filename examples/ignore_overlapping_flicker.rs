@@ -33,13 +33,6 @@ fn setup(
     asset_server: Res<AssetServer>,
 ) {
     commands.spawn(Camera2dBundle::default());
-    /*commands.spawn(MaterialMesh2dBundle {
-        mesh: meshes.add(Mesh::from(shape::Quad::default())).into(),
-        transform: Transform::default().with_scale(Vec3::splat(128.0)),
-        material: materials.add(ColorMaterial::from(Color::PURPLE)),
-        ..default()
-    })
-    .insert(Marker);*/
     commands
         .spawn(SpriteBundle {
             texture: asset_server.load("asteroid5.png"),
