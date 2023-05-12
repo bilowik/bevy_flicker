@@ -1,3 +1,5 @@
+// Also acts as a test to ensure that the alpha of the underlying sprite is being utilized
+// correctly 
 use bevy::prelude::*;
 use bevy_flicker::prelude::*;
 
