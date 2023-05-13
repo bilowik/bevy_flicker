@@ -1,16 +1,17 @@
 //! This plugin facilitates creating a brief overlay/mix of a specific color over a sprite or mesh.
 //!
-//! To trigger a flicker, you can send a [FlickerStartEvent], which will contain the parameters
+//! To trigger a flicker, you can send a [FlickerStartEvent][events::FlickerStartEvent], which will contain the parameters
 //! that dictate the color, length, and strength of the flicker. 
 //!
-//! Included is also a [RepeatingFlicker][components::RepeatingFlicker] component that will repeat a flicker on a timer.
+//! Included is also a [RepeatingFlicker][components::RepeatingFlicker] component that will send 
+//! [FlickerStartEvents][events::FlickerStartEvent] on an interval.
 //!
 //! This also works on textures with alpha, the overlay takes into account the alpha of the 
 //! underlying texture and will take the lowest alpha between the two. So if a texture has pixels
 //! with an alpha of 0.0 and the overlay color has an alpha of 0.3, then the overlay above those pixels 
 //! will also have an alpha of 0.0.
 //!
-//! See more, complete examples here <https://github.com/bilowik/bevy_flicker/tree/main/examples>
+//! See more, complete examples [here](https://github.com/bilowik/bevy_flicker/tree/main/examples)
 //!
 //!
 //! ```no_run
@@ -49,9 +50,11 @@ use events::FlickerStartEvent;
 use flicker::{FlickerMaterial, FLICKER_MATERIAL_SHADER_HANDLE};
 use systems::{flicker_start, flicker_tick, repeating_flicker_tick};
 
+/// The bevy plugin to include during App initialization
 #[derive(Default)]
 pub struct FlickerPlugin;
 
+/// The SystemSet that the flicker systems belong to.
 #[derive(SystemSet, Debug, Hash, PartialEq, Eq, Clone, Copy)]
 pub struct FlickerSet;
 

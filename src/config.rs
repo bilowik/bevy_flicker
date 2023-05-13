@@ -4,7 +4,11 @@ use bevy::prelude::*;
 /// entity that is already in a flickering state
 #[derive(PartialEq, Eq)]
 pub enum FlickerOverlapAction {
+    /// Flicker events targetted at entities that are already flickering will overwrite the
+    /// existing flicker.
     Overwrite,
+    
+    /// Flicker events targetted at entities that are already flickering will be ignored.
     Ignore,
 }
 
@@ -16,6 +20,7 @@ impl Default for FlickerOverlapAction {
 
 #[derive(Resource, Default)]
 pub struct FlickerPluginConfig {
+    /// See [FlickerOverlapAction]
     pub overlap_action: FlickerOverlapAction,
 }
 

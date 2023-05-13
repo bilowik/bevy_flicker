@@ -29,6 +29,7 @@ pub struct NoFlicker;
 #[reflect(Component)]
 pub struct FlickerMarker;
 
+/// Sends [FlickerStartEvents][crate::events::FlickerStartEvent] on an interval
 #[derive(Component, Reflect, FromReflect)]
 #[reflect(Component)]
 pub struct RepeatingFlicker {
@@ -67,6 +68,7 @@ impl RepeatingFlicker {
     }
 }
 
+/// For implementing a builder pattern on [RepeatingFlicker][crate::components::RepeatingFlicker]
 pub struct RepeatingFlickerBuilder {
     flicker_time_length: f32,
     time_between_flickers: f32,
