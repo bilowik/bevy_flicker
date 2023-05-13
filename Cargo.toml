@@ -2,8 +2,12 @@
 name = "bevy_flicker"
 version = "0.1.0"
 edition = "2021"
+license = "Unlicense"
+keywords = ["gamedev", "graphics"]
+categories = ["game-development"]
+authors = ["bilowik"]
+description = "An easy to use event-based system to apply brief overlays to sprites and meshes"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 bevy = "^0.10.1"
