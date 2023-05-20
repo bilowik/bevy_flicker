@@ -6,10 +6,10 @@
 //! Included is also a [RepeatingFlicker][components::RepeatingFlicker] component that will send 
 //! [FlickerStartEvents][events::FlickerStartEvent] on an interval.
 //!
-//! This also works on textures with alpha, the overlay takes into account the alpha of the 
-//! underlying texture and will take the lowest alpha between the two. So if a texture has pixels
-//! with an alpha of 0.0 and the overlay color has an alpha of 0.3, then the overlay above those pixels 
-//! will also have an alpha of 0.0.
+//! This also works on textures with alpha, the overlay takes into account the alpha of the underlying texture 
+//! and will adjust the overlay alpha so that it's intensity is proportional between different underlying 
+//! alpha values. So an underlying 0.2 alpha value will reduce the alpha of the overlay by 80%. For alpha 
+//! values of 0, the overlay's alpha will also be 0.
 //!
 //! See more, complete examples [here](https://github.com/bilowik/bevy_flicker/tree/main/examples)
 //!
