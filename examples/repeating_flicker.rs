@@ -2,7 +2,6 @@ use bevy::prelude::*;
 use bevy_flicker::prelude::*;
 
 const FIXED_TIMESTEP: f32 = 1.0;
-const FLICKER_LENGTH: f32 = 0.5;
 
 #[derive(Component, Default)]
 pub struct Marker;
