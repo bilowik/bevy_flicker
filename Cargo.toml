@@ -1,6 +1,6 @@
 [package]
 name = "bevy_flicker"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "Unlicense"
 keywords = ["gamedev", "graphics", "bevy", "bevy_plugin"]
