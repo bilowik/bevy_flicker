@@ -43,3 +43,8 @@ fn tick(query: Query<Entity>, mut event_writer: EventWriter<FlickerStartEvent>) 
 |:--:|
 |![5b-1OxIy](https://github.com/bilowik/bevy_flicker/assets/43679332/e0024971-57d9-4300-ba9d-f931f5212f75)|
 
+| `cargo run --example alpha_flicker |
+|:--:|
+|![lzwT7Hl-](https://github.com/bilowik/bevy_flicker/assets/43679332/1afffb11-541c-4d66-8108-621ec38f430e)|
+
+
