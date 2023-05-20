@@ -14,7 +14,6 @@ will also have an alpha of 0.0.
 
 See more, complete examples [here](https://github.com/bilowik/bevy_flicker/tree/main/examples)
 
-
 ```rust
 use bevy_flicker::prelude::*;
 
@@ -31,3 +30,7 @@ fn tick(query: Query<Entity>, mut event_writer: EventWriter<FlickerStartEvent>) 
 
 
 ```
+
+### Visual Examples
+![svuL4w_7](https://github.com/bilowik/bevy_flicker/assets/43679332/c259cfbb-a146-4d40-b7e3-90fa3b80d1a7)
+
