@@ -38,10 +38,12 @@ fn tick(query: Query<Entity>, mut event_writer: EventWriter<FlickerStartEvent>) 
 | `cargo run --example sprite_flicker` | 
 |:--:|
 |![svuL4w_7](https://github.com/bilowik/bevy_flicker/assets/43679332/c259cfbb-a146-4d40-b7e3-90fa3b80d1a7)|
+___
 
 | `cargo run --example mesh_flicker` | 
 |:--:|
 |![5b-1OxIy](https://github.com/bilowik/bevy_flicker/assets/43679332/e0024971-57d9-4300-ba9d-f931f5212f75)|
+___
 
 | `cargo run --example alpha_flicker` |
 |:--:|
