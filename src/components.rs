@@ -38,11 +38,14 @@ pub struct RepeatingFlicker {
     /// Time in seconds between each flicker, including the time passed during the flicker
     pub time_between_flickers: f32,
     
-    /// See `FlickerStartEvent` for more information
+    /// See [FlickerStartEvent][crate::events::FlickerStartEvent] for more information
     pub flicker_time_length: f32,
 
-    /// See `FlickerStartEvent` for more information
+    /// See [FlickerStartEvent][crate::events::FlickerStartEvent] for more information
     pub color: Color,
+    
+    /// The number of times to flicker in total. 
+    pub count: Option<u32>,
 }
 
 
@@ -73,6 +76,7 @@ pub struct RepeatingFlickerBuilder {
     flicker_time_length: f32,
     time_between_flickers: f32,
     color: Color,
+    count: Option<u32>,
 }
 
 impl Default for RepeatingFlickerBuilder {
@@ -80,7 +84,8 @@ impl Default for RepeatingFlickerBuilder {
         Self {
             flicker_time_length: 0.1,
             time_between_flickers: 0.5,
-            color: Color::WHITE
+            color: Color::WHITE,
+            count: None
         }
     }
 }
@@ -105,6 +110,11 @@ impl RepeatingFlickerBuilder {
         self
     }
 
+    pub fn with_count(mut self, count: u32) -> Self {
+        self.count = Some(count);
+        self
+    }
+
 
     pub fn build(self) -> RepeatingFlicker {
         RepeatingFlicker {
@@ -112,6 +122,7 @@ impl RepeatingFlickerBuilder {
             flicker_time_length: self.flicker_time_length,
             time_between_flickers: self.time_between_flickers, 
             color: self.color,
+            count: self.count,
         }
     }
 }

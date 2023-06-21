@@ -177,13 +177,23 @@ pub(crate) fn flicker_tick(
 pub(crate) fn repeating_flicker_tick(
     mut repeating_flickers: Query<(Entity, &mut RepeatingFlicker)>,
     mut flicker_start_event_writer: EventWriter<FlickerStartEvent>,
+    mut commands: Commands,
     time: Res<Time>,
 ) {
     for (entity, mut repeating_flicker) in repeating_flickers.iter_mut() {
         repeating_flicker.timer.tick(time.delta());
         if repeating_flicker.timer.just_finished() {
             // The pause has finished, flicker again
-            flicker_start_event_writer.send(repeating_flicker.generate_start_event(entity)); 
+            flicker_start_event_writer.send(repeating_flicker.generate_start_event(entity));
+            if let Some(count) = repeating_flicker.count.as_mut() {
+                *count -= 1;
+                if *count == 0 {
+                    // We've finished flickering, remove.
+                    if let Some(mut entity_commands) = commands.get_entity(entity) {
+                        entity_commands.remove::<RepeatingFlicker>();
+                    }
+                }
+            }
         }
     }
 }

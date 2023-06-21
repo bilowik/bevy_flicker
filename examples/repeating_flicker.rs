@@ -12,6 +12,8 @@ fn main() {
         .add_plugin(FlickerPlugin)
         .add_system(setup.on_startup())
         .insert_resource(FixedTime::new_from_secs(FIXED_TIMESTEP))
+        .add_system(tick.in_schedule(CoreSchedule::FixedUpdate))
+        .insert_resource(FixedTime::new_from_secs(FIXED_TIMESTEP))
         .run();
 }
 
@@ -27,9 +29,25 @@ fn setup(
                 transform: Transform::default().with_scale(Vec3::splat(8.0)),
                 ..default()
             },
-            RepeatingFlicker::builder()
-                .with_color(Color::rgba(0.0, 0.0, 1.0, 0.2))
-                .build(),
+            Marker
         ));
 
+}
+
+
+fn tick(
+    query: Query<Entity, With<Marker>>,
+    mut commands: Commands,
+) {
+    commands.entity(query.single()).insert(repeating_flicker());
+}
+
+
+fn repeating_flicker() -> RepeatingFlicker {
+        RepeatingFlicker::builder()
+            .with_color(Color::rgba(0.0, 0.0, 0.0, 0.3))
+            .with_flicker_time_length(0.1)
+            .with_time_between_flickers(0.15)
+            .with_count(2)
+            .build()
 }
