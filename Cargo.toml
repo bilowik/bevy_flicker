@@ -7,7 +7,7 @@ keywords = ["gamedev", "graphics", "bevy", "bevy_plugin"]
 categories = ["game-development"]
 authors = ["bilowik"]
 description = "An easy to use event-based system to apply brief overlays to sprites and meshes"
-
+repository = "https://github.com/bilowik/bevy_flicker"
 
 [dependencies]
 bevy = "0.10.1"
