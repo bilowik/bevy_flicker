@@ -1,14 +1,14 @@
 //! This plugin facilitates creating a brief overlay/mix of a specific color over a sprite or mesh.
 //!
 //! To trigger a flicker, you can send a [FlickerStartEvent][events::FlickerStartEvent], which will contain the parameters
-//! that dictate the color, length, and strength of the flicker. 
+//! that dictate the color, length, and strength of the flicker.
 //!
-//! Included is also a [RepeatingFlicker][components::RepeatingFlicker] component that will send 
+//! Included is also a [RepeatingFlicker][components::RepeatingFlicker] component that will send
 //! [FlickerStartEvents][events::FlickerStartEvent] on an interval.
 //!
-//! This also works on textures with alpha, the overlay takes into account the alpha of the underlying texture 
-//! and will adjust the overlay alpha so that it's intensity is proportional between different underlying 
-//! alpha values. So an underlying 0.2 alpha value will reduce the alpha of the overlay by 80%. For alpha 
+//! This also works on textures with alpha, the overlay takes into account the alpha of the underlying texture
+//! and will adjust the overlay alpha so that it's intensity is proportional between different underlying
+//! alpha values. So an underlying 0.2 alpha value will reduce the alpha of the overlay by 80%. For alpha
 //! values of 0, the overlay's alpha will also be 0.
 //!
 //! See more, complete examples [here](https://github.com/bilowik/bevy_flicker/tree/main/examples)
@@ -16,7 +16,7 @@
 //!
 //! ```no_run
 //! use bevy_flicker::prelude::*;
-//! 
+//!
 //! fn tick(query: Query<Entity>, mut event_writer: EventWriter<FlickerStartEvent>) {
 //!     for e in query.iter() {
 //!         event_writer.send(
@@ -84,5 +84,10 @@ impl Plugin for FlickerPlugin {
 }
 
 pub mod prelude {
-    pub use super::{config::{FlickerPluginConfig, FlickerOverlapAction}, events::*, FlickerPlugin, FlickerSet, components::RepeatingFlicker};
+    pub use super::{
+        components::RepeatingFlicker,
+        config::{FlickerOverlapAction, FlickerPluginConfig},
+        events::*,
+        FlickerPlugin, FlickerSet,
+    };
 }

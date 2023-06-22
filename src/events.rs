@@ -2,12 +2,12 @@ use bevy::prelude::*;
 
 #[derive(Debug)]
 pub struct FlickerStartEvent {
-    /// Entity to apply the flicker to 
+    /// Entity to apply the flicker to
     pub entity: Entity,
 
     /// The length in seconds the flicker should last
     pub secs: f32,
-    
+
     /// The flicker color that will be blending with the original color
     pub color: Color,
 }

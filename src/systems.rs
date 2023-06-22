@@ -1,10 +1,13 @@
 use crate::{
-    components::{Flickered, NoFlicker, RepeatingFlicker, FlickerMarker},
+    components::{FlickerMarker, Flickered, NoFlicker, RepeatingFlicker},
     config::FlickerPluginConfig,
     events::FlickerStartEvent,
     flicker::FlickerMaterial,
 };
-use bevy::{prelude::*, sprite::{Mesh2dHandle, MaterialMesh2dBundle}};
+use bevy::{
+    prelude::*,
+    sprite::{MaterialMesh2dBundle, Mesh2dHandle},
+};
 
 pub(crate) fn flicker_start(
     sprites: Query<(&Sprite, &Handle<Image>), Without<NoFlicker>>,
@@ -29,9 +32,7 @@ pub(crate) fn flicker_start(
 
         // Get image handle or image handle save
         let (material, mesh) = if let (Ok(handle), Ok(sprite)) = (
-            sprites
-                .get_component::<Handle<Image>>(e.entity)
-                .cloned(),
+            sprites.get_component::<Handle<Image>>(e.entity).cloned(),
             sprites.get_component::<Sprite>(e.entity),
         ) {
             if let Some(image) = images.get(&handle) {
@@ -94,19 +95,16 @@ pub(crate) fn flicker_start(
                 error!("Could not get atlas to determine which part of sprite is currently active");
                 continue;
             }
-        } else if let Ok(mesh_handle) =
-            mesh_components.get_component::<Mesh2dHandle>(e.entity)
-        {
+        } else if let Ok(mesh_handle) = mesh_components.get_component::<Mesh2dHandle>(e.entity) {
             if let Some(mesh) = meshes.get(&mesh_handle.0).cloned() {
                 (
                     FlickerMaterial {
                         color: e.color,
                         ..default()
                     },
-                    mesh
+                    mesh,
                 )
-            }
-            else {
+            } else {
                 error!("Entity {:?} had an invalid mesh handle", e.entity);
                 continue;
             }
@@ -117,7 +115,6 @@ pub(crate) fn flicker_start(
             );
             continue;
         };
-
 
         if !config.ignore_overlap() {
             // Despawn any previous flickering children
@@ -135,25 +132,24 @@ pub(crate) fn flicker_start(
 
         if let Some(mut entity_commands) = commands.get_entity(e.entity) {
             entity_commands.with_children(|parent| {
-                parent.spawn(MaterialMesh2dBundle {
-                    material: flicker_materials.add(material),
-                    mesh: Mesh2dHandle(meshes.add(mesh)),
-                    transform: Transform {
-                        // Translation is relative to its parent, so 1.0 guarantees it is always in
-                        // front of its parent.
-                        translation: Vec3::new(0.0, 0.0, 1.0),
+                parent
+                    .spawn(MaterialMesh2dBundle {
+                        material: flicker_materials.add(material),
+                        mesh: Mesh2dHandle(meshes.add(mesh)),
+                        transform: Transform {
+                            // Translation is relative to its parent, so 1.0 guarantees it is always in
+                            // front of its parent.
+                            translation: Vec3::new(0.0, 0.0, 1.0),
+                            ..default()
+                        },
                         ..default()
-                    },
-                    ..default()
-                })
-                .insert(Flickered::with_secs(e.secs));
+                    })
+                    .insert(Flickered::with_secs(e.secs));
             });
             entity_commands.insert(FlickerMarker);
-            
         }
     }
 }
-
 
 pub(crate) fn flicker_tick(
     mut flickered: Query<(&Parent, Entity, &mut Flickered)>,
@@ -173,7 +169,6 @@ pub(crate) fn flicker_tick(
     }
 }
 
-
 pub(crate) fn repeating_flicker_tick(
     mut repeating_flickers: Query<(Entity, &mut RepeatingFlicker)>,
     mut flicker_start_event_writer: EventWriter<FlickerStartEvent>,
@@ -182,7 +177,7 @@ pub(crate) fn repeating_flicker_tick(
 ) {
     for (entity, mut repeating_flicker) in repeating_flickers.iter_mut() {
         if repeating_flicker.curr_pulse_count > 0 {
-            // We still have flickers left in the current pulse. 
+            // We still have flickers left in the current pulse.
             repeating_flicker.timer.tick(time.delta());
             if repeating_flicker.timer.just_finished() {
                 // The pause has finished, flicker again
@@ -202,17 +197,15 @@ pub(crate) fn repeating_flicker_tick(
                     }
                 }
             }
-        }
-        else {
+        } else {
             repeating_flicker.pulse_timer.tick(time.delta());
             if repeating_flicker.pulse_timer.just_finished() {
                 // We are ready for another pulse.
                 repeating_flicker.curr_pulse_count = repeating_flicker.pulse_count;
-                // Also reset the flicker timer since there's likely a small amount of 
+                // Also reset the flicker timer since there's likely a small amount of
                 // overflow from the last tick.
                 //repeating_flicker.timer.reset();
             }
         }
     }
 }
-

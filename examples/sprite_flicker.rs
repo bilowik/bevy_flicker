@@ -1,5 +1,5 @@
 // Also acts as a test to ensure that the alpha of the underlying sprite is being utilized
-// correctly 
+// correctly
 use bevy::prelude::*;
 use bevy_flicker::prelude::*;
 
@@ -19,10 +19,7 @@ fn main() {
         .run();
 }
 
-fn setup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(Camera2dBundle::default());
     commands
         .spawn(SpriteBundle {

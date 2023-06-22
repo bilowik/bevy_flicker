@@ -7,7 +7,7 @@ pub enum FlickerOverlapAction {
     /// Flicker events targetted at entities that are already flickering will overwrite the
     /// existing flicker.
     Overwrite,
-    
+
     /// Flicker events targetted at entities that are already flickering will be ignored.
     Ignore,
 }

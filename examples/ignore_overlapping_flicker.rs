@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 use bevy_flicker::prelude::*;
 
-
 const FIXED_TIMESTEP: f32 = 0.5;
 const FLICKER_LENGTH: f32 = 3.0;
 
@@ -24,14 +23,13 @@ fn main() {
         .add_system(setup.on_startup())
         .add_system(tick.in_schedule(CoreSchedule::FixedUpdate))
         .insert_resource(FixedTime::new_from_secs(FIXED_TIMESTEP))
-        .insert_resource(FlickerPluginConfig { overlap_action: FlickerOverlapAction::Ignore })
+        .insert_resource(FlickerPluginConfig {
+            overlap_action: FlickerOverlapAction::Ignore,
+        })
         .run();
 }
 
-fn setup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(Camera2dBundle::default());
     commands
         .spawn(SpriteBundle {

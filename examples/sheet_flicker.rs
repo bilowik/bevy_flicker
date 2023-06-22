@@ -1,6 +1,6 @@
-// In an earlier version of this plugin, the inner mechanics of flickering 
+// In an earlier version of this plugin, the inner mechanics of flickering
 // were much more complex and so flickering a TextureAtlasSprite was a much
-// more significant chore code-wise, which is why this example existed to test 
+// more significant chore code-wise, which is why this example existed to test
 // that.
 
 use bevy::prelude::*;
@@ -28,7 +28,14 @@ fn setup(
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
     let texture = asset_server.load("asteroid_sheet_test.png");
-    let atlas = texture_atlases.add(TextureAtlas::from_grid(texture, Vec2::new(64.0, 64.0), 1, 4, None, None));
+    let atlas = texture_atlases.add(TextureAtlas::from_grid(
+        texture,
+        Vec2::new(64.0, 64.0),
+        1,
+        4,
+        None,
+        None,
+    ));
     commands.spawn(Camera2dBundle::default());
     commands
         .spawn(SpriteSheetBundle {
