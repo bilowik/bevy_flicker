@@ -181,18 +181,36 @@ pub(crate) fn repeating_flicker_tick(
     time: Res<Time>,
 ) {
     for (entity, mut repeating_flicker) in repeating_flickers.iter_mut() {
-        repeating_flicker.timer.tick(time.delta());
-        if repeating_flicker.timer.just_finished() {
-            // The pause has finished, flicker again
-            flicker_start_event_writer.send(repeating_flicker.generate_start_event(entity));
-            if let Some(count) = repeating_flicker.count.as_mut() {
-                *count -= 1;
-                if *count == 0 {
-                    // We've finished flickering, remove.
-                    if let Some(mut entity_commands) = commands.get_entity(entity) {
-                        entity_commands.remove::<RepeatingFlicker>();
+        if repeating_flicker.curr_pulse_count > 0 {
+            // We still have flickers left in the current pulse. 
+            repeating_flicker.timer.tick(time.delta());
+            if repeating_flicker.timer.just_finished() {
+                // The pause has finished, flicker again
+                flicker_start_event_writer.send(repeating_flicker.generate_start_event(entity));
+                repeating_flicker.curr_pulse_count -= 1;
+                if repeating_flicker.curr_pulse_count == 0 {
+                    if let Some(count) = repeating_flicker.count.as_mut() {
+                        // We have a finite count and we just finished a pulse, so decrement count and
+                        // check for termination condition
+                        *count -= 1;
+                        if *count == 0 {
+                            // We've finished flickering, remove.
+                            if let Some(mut entity_commands) = commands.get_entity(entity) {
+                                entity_commands.remove::<RepeatingFlicker>();
+                            }
+                        }
                     }
                 }
+            }
+        }
+        else {
+            repeating_flicker.pulse_timer.tick(time.delta());
+            if repeating_flicker.pulse_timer.just_finished() {
+                // We are ready for another pulse.
+                repeating_flicker.curr_pulse_count = repeating_flicker.pulse_count;
+                // Also reset the flicker timer since there's likely a small amount of 
+                // overflow from the last tick.
+                //repeating_flicker.timer.reset();
             }
         }
     }
