@@ -8,7 +8,7 @@ use bevy::{
 pub const FLICKER_MATERIAL_SHADER_HANDLE: HandleUntyped =
     HandleUntyped::weak_from_u64(Shader::TYPE_UUID, 3253086872234592510);
 
-#[derive(AsBindGroup, TypeUuid, Clone, Reflect, FromReflect)]
+#[derive(AsBindGroup, TypeUuid, Clone, Reflect)]
 #[uuid = "da4a38fa-0ea5-4ced-b447-e0cf9e00f3ee"]
 pub struct FlickerMaterial {
     #[texture(0)]

@@ -10,7 +10,7 @@ description = "An easy to use event-based system to apply brief overlays to spri
 repository = "https://github.com/bilowik/bevy_flicker"
 
 [dependencies]
-bevy = "0.10.1"
+bevy = "0.11.0"
 
 
 [features]

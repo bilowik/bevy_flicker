@@ -7,8 +7,8 @@ pub struct Marker;
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugin(FlickerPlugin)
-        .add_system(setup.on_startup())
+        .add_plugins(FlickerPlugin)
+        .add_systems(Startup, setup)
         .run();
 }
 

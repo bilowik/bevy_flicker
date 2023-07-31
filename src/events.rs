@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-#[derive(Debug)]
+#[derive(Debug, Event)]
 pub struct FlickerStartEvent {
     /// Entity to apply the flicker to
     pub entity: Entity,

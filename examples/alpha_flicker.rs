@@ -10,9 +10,9 @@ pub struct Marker;
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugin(FlickerPlugin)
-        .add_system(setup.on_startup())
-        .add_system(tick.in_schedule(CoreSchedule::FixedUpdate))
+        .add_plugins(FlickerPlugin)
+        .add_systems(Startup, setup)
+        .add_systems(FixedUpdate, tick)
         .insert_resource(FixedTime::new_from_secs(FIXED_TIMESTEP))
         .run();
 }

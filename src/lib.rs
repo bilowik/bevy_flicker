@@ -31,9 +31,9 @@
 //!
 //! ```
 
-use bevy::app::{App, Plugin};
+use bevy::app::{App, Plugin, Update};
 use bevy::asset::{load_internal_asset, AddAsset};
-use bevy::ecs::prelude::IntoSystemConfig;
+use bevy::ecs::schedule::IntoSystemConfigs;
 use bevy::ecs::schedule::SystemSet;
 use bevy::render::prelude::Shader;
 
@@ -68,7 +68,7 @@ impl Plugin for FlickerPlugin {
             Shader::from_wgsl
         );
 
-        app.add_plugin(Material2dPlugin::<FlickerMaterial>::default())
+        app.add_plugins(Material2dPlugin::<FlickerMaterial>::default())
             .register_asset_reflect::<FlickerMaterial>();
 
         // Register events
@@ -76,9 +76,9 @@ impl Plugin for FlickerPlugin {
 
         // Register systems and systemset
         // TODO: These might need to be ordered to prevent conflicts potentially?
-        app.add_system(flicker_start.in_set(FlickerSet));
-        app.add_system(flicker_tick.in_set(FlickerSet));
-        app.add_system(repeating_flicker_tick.in_set(FlickerSet));
+        app.add_systems(Update, flicker_start.in_set(FlickerSet));
+        app.add_systems(Update, flicker_tick.in_set(FlickerSet));
+        app.add_systems(Update, repeating_flicker_tick.in_set(FlickerSet));
         app.init_resource::<FlickerPluginConfig>();
     }
 }

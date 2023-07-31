@@ -1,7 +1,7 @@
 use crate::events::FlickerStartEvent;
 use bevy::prelude::*;
 
-#[derive(Component, Reflect, FromReflect)]
+#[derive(Component, Reflect)]
 pub struct Flickered(pub Timer);
 
 impl Default for Flickered {
@@ -18,14 +18,14 @@ impl Flickered {
 }
 
 /// An entity with this component will not react to flicker events
-#[derive(Component, Debug, Default, Reflect, FromReflect)]
+#[derive(Component, Debug, Default, Reflect)]
 #[reflect(Component)]
 pub struct NoFlicker;
 
 /// Marks an entity which is actively being flickered
 /// An extra marker is needed since no components are added to the entity
 /// being flickered.
-#[derive(Component, Debug, Default, Reflect, FromReflect)]
+#[derive(Component, Debug, Default, Reflect)]
 #[reflect(Component)]
 pub struct FlickerMarker;
 
@@ -35,7 +35,7 @@ pub struct FlickerMarker;
 /// each in the pulse of [RepeatingFlicker::time_between_flickers]. Each pulse has a delay of
 /// [RepeatingFlicker::time_between_pulses]. When [RepeatingFlicker::count] is set, after the
 /// set number of pulses occur, the [RepeatingFlicker] will be removed from the Entity.
-#[derive(Component, Reflect, FromReflect)]
+#[derive(Component, Reflect)]
 #[reflect(Component)]
 pub struct RepeatingFlicker {
     pub(crate) timer: Timer,
