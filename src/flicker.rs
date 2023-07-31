@@ -1,9 +1,20 @@
-use bevy::{
-    prelude::*,
-    reflect::TypeUuid,
-    render::render_resource::{AsBindGroup, ShaderRef},
-    sprite::Material2d,
+use bevy_reflect::TypeUuid;
+use bevy_render::{
+    render_resource::{AsBindGroup, ShaderRef, Shader},
+    texture::Image,
+    color::Color,
 };
+use bevy_sprite::Material2d;
+use bevy_asset::{HandleUntyped, Handle};
+use bevy_reflect::Reflect;
+use bevy_math::Vec2;
+
+// Required for the AsBindGroup derive macro.
+mod bevy {
+    pub mod render {
+        pub use bevy_render::*;
+    }
+}
 
 pub const FLICKER_MATERIAL_SHADER_HANDLE: HandleUntyped =
     HandleUntyped::weak_from_u64(Shader::TYPE_UUID, 3253086872234592510);

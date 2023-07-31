@@ -1,5 +1,16 @@
 use crate::events::FlickerStartEvent;
-use bevy::prelude::*;
+
+use bevy_ecs::{
+    component::Component,
+    entity::Entity,
+    reflect::ReflectComponent,
+};
+
+use bevy_reflect::Reflect;
+
+use bevy_time::{Timer, TimerMode};
+
+use bevy_render::color::Color;
 
 #[derive(Component, Reflect)]
 pub struct Flickered(pub Timer);

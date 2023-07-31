@@ -31,13 +31,12 @@
 //!
 //! ```
 
-use bevy::app::{App, Plugin, Update};
-use bevy::asset::{load_internal_asset, AddAsset};
-use bevy::ecs::schedule::IntoSystemConfigs;
-use bevy::ecs::schedule::SystemSet;
-use bevy::render::prelude::Shader;
+use bevy_app::{App, Plugin, Update};
+use bevy_asset::{load_internal_asset, AddAsset};
+use bevy_ecs::schedule::{IntoSystemConfigs, SystemSet};
+use bevy_render::prelude::Shader;
 
-use bevy::sprite::Material2dPlugin;
+use bevy_sprite::Material2dPlugin;
 
 pub mod components;
 pub mod config;
