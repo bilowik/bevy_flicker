@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy_ecs::system::Resource;
 
 /// Used to determine what to do when a flicker event is received for an
 /// entity that is already in a flickering state

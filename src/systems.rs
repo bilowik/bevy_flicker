@@ -4,10 +4,28 @@ use crate::{
     events::FlickerStartEvent,
     flicker::FlickerMaterial,
 };
-use bevy::{
-    prelude::*,
-    sprite::{MaterialMesh2dBundle, Mesh2dHandle},
+
+use bevy_sprite::{MaterialMesh2dBundle, Mesh2dHandle};
+use bevy_ecs::{
+    system::{Query, Commands, Res, ResMut},
+    query::{With, Without},
+    entity::Entity,
+    event::{EventReader, EventWriter},
 };
+
+use bevy_sprite::{Sprite, TextureAtlas, TextureAtlasSprite};
+use bevy_render::{
+    texture::Image,
+    mesh::Mesh
+};
+use bevy_asset::{Handle, Assets};
+use bevy_math::{Vec2, Vec3, Rect};
+use bevy_hierarchy::{Children, Parent, BuildChildren};
+
+use bevy_time::Time;
+use bevy_render::mesh::shape;
+use bevy_log::{error, warn};
+use bevy_transform::components::Transform;
 
 pub(crate) fn flicker_start(
     sprites: Query<(&Sprite, &Handle<Image>), Without<NoFlicker>>,
@@ -40,7 +58,7 @@ pub(crate) fn flicker_start(
                     FlickerMaterial {
                         source_image: Some(handle.clone()),
                         color: e.color,
-                        ..default()
+                        ..Default::default()
                     },
                     Mesh::from(shape::Quad::new(sprite.custom_size.unwrap_or(image.size()))),
                 )
@@ -81,7 +99,7 @@ pub(crate) fn flicker_start(
                             size,
                             ratio,
                             color: e.color,
-                            ..default()
+                            ..Default::default()
                         },
                         Mesh::from(shape::Quad::new(tas.custom_size.unwrap_or(rect_size))),
                     )
@@ -100,7 +118,7 @@ pub(crate) fn flicker_start(
                 (
                     FlickerMaterial {
                         color: e.color,
-                        ..default()
+                        ..Default::default()
                     },
                     mesh,
                 )
@@ -140,9 +158,9 @@ pub(crate) fn flicker_start(
                             // Translation is relative to its parent, so 1.0 guarantees it is always in
                             // front of its parent.
                             translation: Vec3::new(0.0, 0.0, 1.0),
-                            ..default()
+                            ..Default::default()
                         },
-                        ..default()
+                        ..Default::default()
                     })
                     .insert(Flickered::with_secs(e.secs));
             });

@@ -1,6 +1,11 @@
-use bevy::prelude::*;
+use bevy_ecs::{
+    entity::Entity,
+    event::Event,
+};
 
-#[derive(Debug)]
+use bevy_render::color::Color;
+
+#[derive(Debug, Event)]
 pub struct FlickerStartEvent {
     /// Entity to apply the flicker to
     pub entity: Entity,
@@ -38,7 +43,7 @@ impl FlickerStartEventBuilder {
     pub fn new(entity: Entity) -> Self {
         Self {
             entity: Some(entity),
-            ..default()
+            ..Default::default()
         }
     }
 
