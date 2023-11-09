@@ -1,7 +1,4 @@
-use bevy_ecs::{
-    entity::Entity,
-    event::Event,
-};
+use bevy_ecs::{entity::Entity, event::Event};
 
 use bevy_render::color::Color;
 

@@ -1,10 +1,6 @@
 use crate::events::FlickerStartEvent;
 
-use bevy_ecs::{
-    component::Component,
-    entity::Entity,
-    reflect::ReflectComponent,
-};
+use bevy_ecs::{component::Component, entity::Entity, reflect::ReflectComponent};
 
 use bevy_reflect::Reflect;
 

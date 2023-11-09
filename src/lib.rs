@@ -64,12 +64,11 @@ impl Plugin for FlickerPlugin {
             .world
             .resource_mut::<::bevy_asset::io::embedded::EmbeddedAssetRegistry>();
         let path = Path::new("flicker_material.wgsl");
-        embedded
-            .insert_asset(
-                PathBuf::new(),
-                &path,
-                include_bytes!("flicker_material.wgsl")
-            );
+        embedded.insert_asset(
+            PathBuf::new(),
+            &path,
+            include_bytes!("flicker_material.wgsl"),
+        );
 
         app.add_plugins(Material2dPlugin::<FlickerMaterial>::default())
             .register_type::<FlickerMaterial>();

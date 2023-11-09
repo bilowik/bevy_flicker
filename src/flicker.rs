@@ -1,13 +1,13 @@
+use bevy_asset::{Asset, Handle};
+use bevy_math::Vec2;
+use bevy_reflect::Reflect;
 use bevy_reflect::TypeUuid;
 use bevy_render::{
+    color::Color,
     render_resource::{AsBindGroup, ShaderRef},
     texture::Image,
-    color::Color,
 };
 use bevy_sprite::Material2d;
-use bevy_asset::{Handle, Asset};
-use bevy_reflect::Reflect;
-use bevy_math::Vec2;
 
 // Required for the AsBindGroup derive macro.
 mod bevy {

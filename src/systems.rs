@@ -5,26 +5,23 @@ use crate::{
     flicker::FlickerMaterial,
 };
 
-use bevy_sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 use bevy_ecs::{
-    system::{Query, Commands, Res, ResMut},
-    query::{With, Without},
     entity::Entity,
     event::{EventReader, EventWriter},
+    query::{With, Without},
+    system::{Commands, Query, Res, ResMut},
 };
+use bevy_sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 
+use bevy_asset::{Assets, Handle};
+use bevy_hierarchy::{BuildChildren, Children, Parent};
+use bevy_math::{Rect, Vec2, Vec3};
+use bevy_render::{mesh::Mesh, texture::Image};
 use bevy_sprite::{Sprite, TextureAtlas, TextureAtlasSprite};
-use bevy_render::{
-    texture::Image,
-    mesh::Mesh
-};
-use bevy_asset::{Handle, Assets};
-use bevy_math::{Vec2, Vec3, Rect};
-use bevy_hierarchy::{Children, Parent, BuildChildren};
 
-use bevy_time::Time;
-use bevy_render::mesh::shape;
 use bevy_log::{error, warn};
+use bevy_render::mesh::shape;
+use bevy_time::Time;
 use bevy_transform::components::Transform;
 
 pub(crate) fn flicker_start(
@@ -60,7 +57,9 @@ pub(crate) fn flicker_start(
                         color: e.color,
                         ..Default::default()
                     },
-                    Mesh::from(shape::Quad::new(sprite.custom_size.unwrap_or(image.size().as_vec2()))),
+                    Mesh::from(shape::Quad::new(
+                        sprite.custom_size.unwrap_or(image.size().as_vec2()),
+                    )),
                 )
             } else {
                 error!("Could not get image from image handle to begin flicker");
