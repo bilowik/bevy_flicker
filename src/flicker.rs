@@ -1,11 +1,11 @@
 use bevy_reflect::TypeUuid;
 use bevy_render::{
-    render_resource::{AsBindGroup, ShaderRef, Shader},
+    render_resource::{AsBindGroup, ShaderRef},
     texture::Image,
     color::Color,
 };
 use bevy_sprite::Material2d;
-use bevy_asset::{HandleUntyped, Handle};
+use bevy_asset::{Handle, Asset};
 use bevy_reflect::Reflect;
 use bevy_math::Vec2;
 
@@ -16,10 +16,7 @@ mod bevy {
     }
 }
 
-pub const FLICKER_MATERIAL_SHADER_HANDLE: HandleUntyped =
-    HandleUntyped::weak_from_u64(Shader::TYPE_UUID, 3253086872234592510);
-
-#[derive(AsBindGroup, TypeUuid, Clone, Reflect)]
+#[derive(AsBindGroup, TypeUuid, Clone, Reflect, Asset)]
 #[uuid = "da4a38fa-0ea5-4ced-b447-e0cf9e00f3ee"]
 pub struct FlickerMaterial {
     #[texture(0)]
@@ -51,7 +48,7 @@ pub struct FlickerMaterial {
 
 impl Material2d for FlickerMaterial {
     fn fragment_shader() -> ShaderRef {
-        FLICKER_MATERIAL_SHADER_HANDLE.typed().into()
+        "embedded://flicker_material.wgsl".into()
     }
 }
 

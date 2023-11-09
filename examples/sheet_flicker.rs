@@ -6,7 +6,7 @@
 use bevy::prelude::*;
 use bevy_flicker::prelude::*;
 
-const FIXED_TIMESTEP: f32 = 1.0;
+const FIXED_TIMESTEP: f64 = 1.0;
 const FLICKER_LENGTH: f32 = 0.5;
 
 #[derive(Component, Default)]
@@ -18,7 +18,7 @@ fn main() {
         .add_plugins(FlickerPlugin)
         .add_systems(Startup, setup)
         .add_systems(FixedUpdate, tick)
-        .insert_resource(FixedTime::new_from_secs(FIXED_TIMESTEP))
+        .insert_resource(Time::<Fixed>::from_seconds(FIXED_TIMESTEP))
         .run();
 }
 

@@ -32,9 +32,7 @@
 //! ```
 
 use bevy_app::{App, Plugin, Update};
-use bevy_asset::{load_internal_asset, AddAsset};
 use bevy_ecs::schedule::{IntoSystemConfigs, SystemSet};
-use bevy_render::prelude::Shader;
 
 use bevy_sprite::Material2dPlugin;
 
@@ -46,8 +44,10 @@ mod systems;
 
 use config::FlickerPluginConfig;
 use events::FlickerStartEvent;
-use flicker::{FlickerMaterial, FLICKER_MATERIAL_SHADER_HANDLE};
+use flicker::FlickerMaterial;
 use systems::{flicker_start, flicker_tick, repeating_flicker_tick};
+
+use std::path::{Path, PathBuf};
 
 /// The bevy plugin to include during App initialization
 #[derive(Default)]
@@ -60,15 +60,19 @@ pub struct FlickerSet;
 impl Plugin for FlickerPlugin {
     fn build(&self, app: &mut App) {
         // Register the flicker mateiral as an internal asset
-        load_internal_asset!(
-            app,
-            FLICKER_MATERIAL_SHADER_HANDLE,
-            "flicker_material.wgsl",
-            Shader::from_wgsl
-        );
+        let embedded = app
+            .world
+            .resource_mut::<::bevy_asset::io::embedded::EmbeddedAssetRegistry>();
+        let path = Path::new("flicker_material.wgsl");
+        embedded
+            .insert_asset(
+                PathBuf::new(),
+                &path,
+                include_bytes!("flicker_material.wgsl")
+            );
 
         app.add_plugins(Material2dPlugin::<FlickerMaterial>::default())
-            .register_asset_reflect::<FlickerMaterial>();
+            .register_type::<FlickerMaterial>();
 
         // Register events
         app.add_event::<FlickerStartEvent>();

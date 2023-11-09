@@ -42,7 +42,7 @@ pub(crate) fn flicker_start(
     with_children: Query<&Children>,
     flicker_children: Query<Entity, With<Flickered>>,
 ) {
-    for e in flicker_start_events.iter() {
+    for e in flicker_start_events.read() {
         if flickereds.get(e.entity).is_ok() && config.ignore_overlap() {
             // We ignore this flicker event entirely.
             continue;
@@ -60,7 +60,7 @@ pub(crate) fn flicker_start(
                         color: e.color,
                         ..Default::default()
                     },
-                    Mesh::from(shape::Quad::new(sprite.custom_size.unwrap_or(image.size()))),
+                    Mesh::from(shape::Quad::new(sprite.custom_size.unwrap_or(image.size().as_vec2()))),
                 )
             } else {
                 error!("Could not get image from image handle to begin flicker");
@@ -88,7 +88,7 @@ pub(crate) fn flicker_start(
                         .copied()
                         .unwrap_or(Rect::new(0.0, 0.0, 0.0, 0.0));
                     let rect_size = Vec2::new(curr_rect.width(), curr_rect.height());
-                    let img_size = img.size();
+                    let img_size = img.size().as_vec2();
                     let ratio = img_size / rect_size;
                     let offset = curr_rect.min / img_size;
                     let size = rect_size / img_size;
