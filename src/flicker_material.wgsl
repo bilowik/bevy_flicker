@@ -1,6 +1,6 @@
 #import bevy_sprite::mesh2d_view_bindings
 #import bevy_pbr::utils
-#import bevy_sprite::mesh2d_vertex_output MeshVertexOutput
+#import bevy_sprite::mesh2d_vertex_output::VertexOutput
 @group(1) @binding(0)
 var texture: texture_2d<f32>;
 
@@ -22,7 +22,7 @@ var<uniform> flicker_material: FlickerMaterial;
 //let ZERO: vec2<f32> = vec2<f32>(0.0, 0.0);
 
 @fragment
-fn fragment(in: MeshVertexOutput) -> @location(0) vec4<f32> {
+fn fragment(in: VertexOutput) -> @location(0) vec4<f32> {
     // Get screen position with coordinates from 0 to 1
     let old_range = 1.0;
     let new_range = flicker_material.size;
