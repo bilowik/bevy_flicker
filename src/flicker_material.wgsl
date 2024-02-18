@@ -1,10 +1,10 @@
 #import bevy_sprite::mesh2d_view_bindings
 #import bevy_pbr::utils
 #import bevy_sprite::mesh2d_vertex_output::VertexOutput
-@group(1) @binding(0)
+@group(2) @binding(0)
 var texture: texture_2d<f32>;
 
-@group(1) @binding(1)
+@group(2) @binding(1)
 var our_sampler: sampler;
 
 
@@ -16,7 +16,7 @@ struct FlickerMaterial {
     color: vec4<f32>,
 }
 
-@group(1) @binding(2)
+@group(2) @binding(2)
 var<uniform> flicker_material: FlickerMaterial;
 
 //let ZERO: vec2<f32> = vec2<f32>(0.0, 0.0);

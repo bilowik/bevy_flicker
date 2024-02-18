@@ -1,7 +1,6 @@
 use bevy_asset::{Asset, Handle};
 use bevy_math::Vec2;
 use bevy_reflect::Reflect;
-use bevy_reflect::TypeUuid;
 use bevy_render::{
     color::Color,
     render_resource::{AsBindGroup, ShaderRef},
@@ -16,8 +15,7 @@ mod bevy {
     }
 }
 
-#[derive(AsBindGroup, TypeUuid, Clone, Reflect, Asset)]
-#[uuid = "da4a38fa-0ea5-4ced-b447-e0cf9e00f3ee"]
+#[derive(AsBindGroup, Clone, Reflect, Asset)]
 pub struct FlickerMaterial {
     #[texture(0)]
     #[sampler(1)]
