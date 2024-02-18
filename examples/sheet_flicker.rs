@@ -25,11 +25,10 @@ fn main() {
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     let texture = asset_server.load("asteroid_sheet_test.png");
-    let atlas = texture_atlases.add(TextureAtlas::from_grid(
-        texture,
+    let atlas_layout = texture_atlas_layouts.add(TextureAtlasLayout::from_grid(
         Vec2::new(64.0, 64.0),
         1,
         4,
@@ -39,12 +38,13 @@ fn setup(
     commands.spawn(Camera2dBundle::default());
     commands
         .spawn(SpriteSheetBundle {
-            sprite: TextureAtlasSprite {
+            atlas: TextureAtlas {
                 index: 2,
+                layout: atlas_layout,
                 ..default()
             },
+            texture,
             transform: Transform::default().with_scale(Vec3::splat(8.0)),
-            texture_atlas: atlas,
             ..default()
         })
         .insert(Marker);
