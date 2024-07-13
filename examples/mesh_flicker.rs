@@ -25,9 +25,9 @@ fn setup(
     commands.spawn(Camera2dBundle::default());
     commands
         .spawn(MaterialMesh2dBundle {
-            mesh: meshes.add(Mesh::from(shape::Quad::default())).into(),
+            mesh: meshes.add(Mesh::from(Rectangle::default())).into(),
             transform: Transform::default().with_scale(Vec3::splat(128.0)),
-            material: materials.add(ColorMaterial::from(Color::RED)),
+            material: materials.add(ColorMaterial::from(Color::from(LinearRgba::RED))),
             ..default()
         })
         .insert(Marker);
@@ -39,7 +39,7 @@ fn tick(query: Query<Entity, With<Marker>>, mut event_writer: EventWriter<Flicke
         event_writer.send(
             FlickerStartEvent::builder(e)
                 .with_secs(FLICKER_LENGTH)
-                .with_color(Color::rgba(0.0, 0.0, 1.0, 0.5))
+                .with_color(LinearRgba::new(0.0, 0.0, 1.0, 0.5).into())
                 .build(),
         );
     }

@@ -1,5 +1,10 @@
-use bevy::prelude::*;
+use std::sync::LazyLock;
+use bevy::{
+    prelude::*,
+    color::palettes::basic::{YELLOW, PURPLE},
+};
 use bevy_flicker::prelude::*;
+
 
 const FIXED_TIMESTEP: f64 = 0.5;
 const FLICKER_LENGTH: f32 = 3.0;
@@ -7,14 +12,15 @@ const FLICKER_LENGTH: f32 = 3.0;
 #[derive(Component, Default)]
 pub struct Marker;
 
-const RANDOM_COLORS: [Color; 6] = [
+
+static RANDOM_COLORS: LazyLock<[Color; 6]> = LazyLock::new(|| {[
     Color::WHITE,
-    Color::BLUE,
-    Color::RED,
-    Color::YELLOW,
+    LinearRgba::BLUE.into(),
+    LinearRgba::RED.into(),
+    YELLOW.into(),
+    PURPLE.into(),
     Color::BLACK,
-    Color::PURPLE,
-];
+]});
 
 fn main() {
     App::new()

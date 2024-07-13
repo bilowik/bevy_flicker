@@ -29,7 +29,7 @@ fn setup(
 ) {
     let texture = asset_server.load("asteroid_sheet_test.png");
     let atlas_layout = texture_atlas_layouts.add(TextureAtlasLayout::from_grid(
-        Vec2::new(64.0, 64.0),
+        UVec2::new(64, 64),
         1,
         4,
         None,
@@ -37,16 +37,17 @@ fn setup(
     ));
     commands.spawn(Camera2dBundle::default());
     commands
-        .spawn(SpriteSheetBundle {
-            atlas: TextureAtlas {
+        .spawn((TextureAtlas {
                 index: 2,
                 layout: atlas_layout,
                 ..default()
             },
-            texture,
-            transform: Transform::default().with_scale(Vec3::splat(8.0)),
-            ..default()
-        })
+            SpriteBundle {
+                texture,
+                transform: Transform::default().with_scale(Vec3::splat(8.0)),
+                ..default()
+            },
+        ))
         .insert(Marker);
 }
 
@@ -56,7 +57,7 @@ fn tick(query: Query<Entity, With<Marker>>, mut event_writer: EventWriter<Flicke
         event_writer.send(
             FlickerStartEvent::builder(e)
                 .with_secs(FLICKER_LENGTH)
-                .with_color(Color::rgba(1.0, 0.0, 0.0, 0.2))
+                .with_color(LinearRgba::new(1.0, 0.0, 0.0, 0.2).into())
                 .build(),
         );
     }
