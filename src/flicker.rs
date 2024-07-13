@@ -2,10 +2,12 @@ use bevy_asset::{Asset, Handle};
 use bevy_math::Vec2;
 use bevy_reflect::Reflect;
 use bevy_render::{
-    color::Color,
     render_resource::{AsBindGroup, ShaderRef},
     texture::Image,
 };
+
+use bevy_color::LinearRgba;
+
 use bevy_sprite::Material2d;
 
 // Required for the AsBindGroup derive macro.
@@ -41,7 +43,7 @@ pub struct FlickerMaterial {
 
     /// The color to flicker, will be mixed with each pixel
     #[uniform(2)]
-    pub color: Color,
+    pub color: LinearRgba,
 }
 
 impl Material2d for FlickerMaterial {
@@ -57,7 +59,7 @@ impl Default for FlickerMaterial {
             offset: Default::default(),
             size: Vec2::splat(1.0),
             ratio: Vec2::splat(1.0),
-            color: Color::rgba(1.0, 1.0, 1.0, 1.0),
+            color: LinearRgba::new(1.0, 1.0, 1.0, 1.0),
         }
     }
 }

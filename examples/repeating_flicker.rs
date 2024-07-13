@@ -35,7 +35,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 fn repeating_flicker_1() -> RepeatingFlicker {
     RepeatingFlicker::builder()
-        .with_color(Color::rgba(0.0, 0.0, 0.0, 0.5))
+        .with_color(LinearRgba::new(0.0, 0.0, 0.0, 0.5).into())
         .with_flicker_time_length(0.1)
         .with_time_between_flickers(0.15)
         .with_time_between_pulses(1.0)
@@ -45,12 +45,12 @@ fn repeating_flicker_1() -> RepeatingFlicker {
 }
 fn repeating_flicker_2() -> RepeatingFlicker {
     RepeatingFlicker::builder()
-        .with_color(Color::rgba(0.0, 0.0, 0.0, 0.5))
+        .with_color(LinearRgba::new(0.0, 0.0, 0.0, 0.5).into())
         .build()
 }
 fn repeating_flicker_3() -> RepeatingFlicker {
     RepeatingFlicker::builder()
-        .with_color(Color::rgba(0.0, 0.0, 0.0, 0.5))
+        .with_color(LinearRgba::new(0.0, 0.0, 0.0, 0.5).into())
         .with_flicker_time_length(0.1)
         .with_time_between_flickers(0.25)
         .with_time_between_pulses(2.5)

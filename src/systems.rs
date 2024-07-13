@@ -15,7 +15,7 @@ use bevy_sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 
 use bevy_asset::{Assets, Handle};
 use bevy_hierarchy::{BuildChildren, Children, Parent};
-use bevy_math::{primitives::Rectangle, Rect, Vec2, Vec3};
+use bevy_math::{primitives::Rectangle, URect, Vec2, Vec3};
 use bevy_render::{mesh::Mesh, texture::Image};
 use bevy_sprite::{Sprite, TextureAtlas, TextureAtlasLayout};
 
@@ -51,7 +51,7 @@ pub(crate) fn flicker_start(
                 (
                     FlickerMaterial {
                         source_image: Some(image_handle.clone()),
-                        color: e.color,
+                        color: e.color.into(),
                         ..Default::default()
                     },
                     Mesh::from(Rectangle::new(mesh_size.x, mesh_size.y)),
@@ -70,11 +70,11 @@ pub(crate) fn flicker_start(
                         .textures
                         .get(index)
                         .copied()
-                        .unwrap_or(Rect::new(0.0, 0.0, 0.0, 0.0));
-                    let rect_size = Vec2::new(curr_rect.width(), curr_rect.height());
+                        .unwrap_or(URect::new(0, 0, 0, 0));
+                    let rect_size = Vec2::new(curr_rect.width() as f32, curr_rect.height() as f32);
                     let img_size = img.size().as_vec2();
                     let ratio = img_size / rect_size;
-                    let offset = curr_rect.min / img_size;
+                    let offset = curr_rect.min.as_vec2() / img_size;
                     let size = rect_size / img_size;
                     let mesh_size = sprite.custom_size.unwrap_or(rect_size);
                     (
@@ -83,7 +83,7 @@ pub(crate) fn flicker_start(
                             offset,
                             size,
                             ratio,
-                            color: e.color,
+                            color: e.color.into(),
                             ..Default::default()
                         },
                         Mesh::from(Rectangle::new(mesh_size.x, mesh_size.y)),
@@ -102,7 +102,7 @@ pub(crate) fn flicker_start(
             if let Some(mesh) = meshes.get(&mesh_handle.0).cloned() {
                 (
                     FlickerMaterial {
-                        color: e.color,
+                        color: e.color.into(),
                         ..Default::default()
                     },
                     mesh,
