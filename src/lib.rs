@@ -61,7 +61,7 @@ impl Plugin for FlickerPlugin {
     fn build(&self, app: &mut App) {
         // Register the flicker mateiral as an internal asset
         let embedded = app
-            .world
+            .world_mut()
             .resource_mut::<::bevy_asset::io::embedded::EmbeddedAssetRegistry>();
         let path = Path::new("flicker_material.wgsl");
         embedded.insert_asset(

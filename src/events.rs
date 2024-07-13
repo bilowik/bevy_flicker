@@ -1,6 +1,6 @@
 use bevy_ecs::{entity::Entity, event::Event};
 
-use bevy_render::color::Color;
+use bevy_color::Color;
 
 #[derive(Debug, Event)]
 pub struct FlickerStartEvent {

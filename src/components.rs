@@ -6,7 +6,7 @@ use bevy_reflect::Reflect;
 
 use bevy_time::{Timer, TimerMode};
 
-use bevy_render::color::Color;
+use bevy_color::Color;
 
 #[derive(Component, Reflect)]
 pub struct Flickered(pub Timer);
