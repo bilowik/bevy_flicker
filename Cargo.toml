@@ -10,22 +10,23 @@ description = "An easy to use event-based system to apply brief overlays to spri
 repository = "https://github.com/bilowik/bevy_flicker"
 
 [dependencies]
-bevy_sprite = "0.13.0"
-bevy_pbr = "0.13.0"
-bevy_ecs = "0.13.0"
-bevy_math = "0.13.0"
-bevy_reflect = "0.13.0"
-bevy_time = "0.13.0"
-bevy_app = "0.13.0"
-bevy_render = "0.13.0"
-bevy_asset = "0.13.0"
-bevy_hierarchy = "0.13.0"
-bevy_log = "0.13.0"
-bevy_transform = "0.13.0"
+bevy_sprite = "0.14.0"
+bevy_pbr = "0.14.0"
+bevy_ecs = "0.14.0"
+bevy_math = "0.14.0"
+bevy_reflect = "0.14.0"
+bevy_time = "0.14.0"
+bevy_app = "0.14.0"
+bevy_render = "0.14.0"
+bevy_asset = "0.14.0"
+bevy_hierarchy = "0.14.0"
+bevy_log = "0.14.0"
+bevy_transform = "0.14.0"
+bevy_color = "0.14.0"
 
 [features]
 warnings = []
 
 
 [dev-dependencies]
-bevy = "0.13.0"
+bevy = "0.14.0"
