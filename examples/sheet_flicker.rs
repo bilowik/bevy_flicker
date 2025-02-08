@@ -35,20 +35,20 @@ fn setup(
         None,
         None,
     ));
-    commands.spawn(Camera2dBundle::default());
-    commands
-        .spawn((TextureAtlas {
+    commands.spawn(Camera2d::default());
+    commands.spawn((
+        Sprite {
+            texture_atlas: Some(TextureAtlas {
                 index: 2,
                 layout: atlas_layout,
                 ..default()
-            },
-            SpriteBundle {
-                texture,
-                transform: Transform::default().with_scale(Vec3::splat(8.0)),
-                ..default()
-            },
-        ))
-        .insert(Marker);
+            }),
+            image: texture,
+            ..default()
+        },
+        Transform::default().with_scale(Vec3::splat(8.0)),
+        Marker,
+    ));
 }
 
 fn tick(query: Query<Entity, With<Marker>>, mut event_writer: EventWriter<FlickerStartEvent>) {

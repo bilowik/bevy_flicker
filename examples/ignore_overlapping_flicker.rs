@@ -1,9 +1,9 @@
-use std::sync::LazyLock;
 use bevy::{
+    color::palettes::basic::{PURPLE, YELLOW},
     prelude::*,
-    color::palettes::basic::{YELLOW, PURPLE},
 };
 use bevy_flicker::prelude::*;
+use std::sync::LazyLock;
 
 const FIXED_TIMESTEP: f64 = 0.5;
 const FLICKER_LENGTH: f32 = 3.0;
@@ -11,14 +11,16 @@ const FLICKER_LENGTH: f32 = 3.0;
 #[derive(Component, Default)]
 pub struct Marker;
 
-static RANDOM_COLORS: LazyLock<[Color; 6]> = LazyLock::new(|| {[
-    Color::WHITE,
-    LinearRgba::BLUE.into(),
-    LinearRgba::RED.into(),
-    YELLOW.into(),
-    PURPLE.into(),
-    Color::BLACK,
-]});
+static RANDOM_COLORS: LazyLock<[Color; 6]> = LazyLock::new(|| {
+    [
+        Color::WHITE,
+        LinearRgba::BLUE.into(),
+        LinearRgba::RED.into(),
+        YELLOW.into(),
+        PURPLE.into(),
+        Color::BLACK,
+    ]
+});
 
 fn main() {
     App::new()
@@ -34,14 +36,12 @@ fn main() {
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn(Camera2dBundle::default());
-    commands
-        .spawn(SpriteBundle {
-            texture: asset_server.load("asteroid5.png"),
-            transform: Transform::default().with_scale(Vec3::splat(8.0)),
-            ..default()
-        })
-        .insert(Marker);
+    commands.spawn(Camera2d::default());
+    commands.spawn((
+        Sprite::from_image(asset_server.load("asteroid5.png")),
+        Marker,
+        Transform::default().with_scale(Vec3::splat(8.0)),
+    ));
 }
 
 fn tick(

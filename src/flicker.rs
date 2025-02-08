@@ -1,14 +1,12 @@
 use bevy_asset::{Asset, Handle};
+use bevy_image::Image;
 use bevy_math::Vec2;
 use bevy_reflect::Reflect;
-use bevy_render::{
-    render_resource::{AsBindGroup, ShaderRef},
-    texture::Image,
-};
+use bevy_render::render_resource::{AsBindGroup, ShaderRef};
 
 use bevy_color::LinearRgba;
 
-use bevy_sprite::Material2d;
+use bevy_sprite::{AlphaMode2d, Material2d};
 
 // Required for the AsBindGroup derive macro.
 mod bevy {
@@ -49,6 +47,9 @@ pub struct FlickerMaterial {
 impl Material2d for FlickerMaterial {
     fn fragment_shader() -> ShaderRef {
         "embedded://flicker_material.wgsl".into()
+    }
+    fn alpha_mode(&self) -> AlphaMode2d {
+        AlphaMode2d::Blend
     }
 }
 
