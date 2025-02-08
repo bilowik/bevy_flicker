@@ -11,22 +11,21 @@ use bevy_ecs::{
     query::{With, Without},
     system::{Commands, Query, Res, ResMut},
 };
-use bevy_sprite::{MaterialMesh2dBundle, Mesh2dHandle};
+use bevy_sprite::MeshMaterial2d;
 
-use bevy_asset::{Assets, Handle};
-use bevy_hierarchy::{BuildChildren, Children, Parent};
-use bevy_math::{primitives::Rectangle, URect, Vec2, Vec3};
-use bevy_render::{mesh::Mesh, texture::Image};
-use bevy_sprite::{Sprite, TextureAtlas, TextureAtlasLayout};
-
+use bevy_asset::Assets;
+use bevy_hierarchy::{BuildChildren, ChildBuild, Children, Parent};
+use bevy_image::Image;
 use bevy_log::{error, warn};
+use bevy_math::{primitives::Rectangle, URect, Vec2, Vec3};
+use bevy_render::mesh::{Mesh, Mesh2d};
+use bevy_sprite::{Sprite, TextureAtlasLayout};
 use bevy_time::Time;
 use bevy_transform::components::Transform;
 
 pub(crate) fn flicker_start(
-    sprites: Query<(&Sprite, &Handle<Image>), (Without<NoFlicker>, Without<TextureAtlas>)>,
-    tass: Query<(&Sprite, &TextureAtlas, &Handle<Image>), Without<NoFlicker>>,
-    mesh_components: Query<&Mesh2dHandle, Without<NoFlicker>>,
+    sprites: Query<&Sprite, Without<NoFlicker>>,
+    mesh_components: Query<&Mesh2d, Without<NoFlicker>>,
     mut flicker_materials: ResMut<Assets<FlickerMaterial>>,
     mut flicker_start_events: EventReader<FlickerStartEvent>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -45,27 +44,18 @@ pub(crate) fn flicker_start(
         }
 
         // Get image handle or image handle save
-        let (material, mesh) = if let Ok((sprite, image_handle)) = sprites.get(e.entity) {
-            if let Some(image) = images.get(image_handle) {
-                let mesh_size = sprite.custom_size.unwrap_or(image.size().as_vec2());
-                (
-                    FlickerMaterial {
-                        source_image: Some(image_handle.clone()),
-                        color: e.color.into(),
-                        ..Default::default()
-                    },
-                    Mesh::from(Rectangle::new(mesh_size.x, mesh_size.y)),
-                )
+        let (material, mesh) = if let Ok(sprite) = sprites.get(e.entity) {
+            let image_handle = &sprite.image;
+            let img = if let Some(img) = images.get(image_handle) {
+                img
             } else {
                 error!("Could not get image from image handle to begin flicker");
                 continue;
-            }
-        }
-        // Get texture atlas or texture atlas save
-        else if let Ok((sprite, texture_atlas, image_handle)) = tass.get(e.entity) {
-            let index = texture_atlas.index;
-            if let Some(atlas) = atlas_layouts.get(&texture_atlas.layout) {
-                if let Some(img) = images.get(image_handle) {
+            };
+
+            if let Some(texture_atlas) = sprite.texture_atlas.as_ref() {
+                let index = texture_atlas.index;
+                if let Some(atlas) = atlas_layouts.get(&texture_atlas.layout) {
                     let curr_rect = atlas
                         .textures
                         .get(index)
@@ -90,13 +80,21 @@ pub(crate) fn flicker_start(
                     )
                 } else {
                     error!(
-                        "Could not get image from image handle to begin flicker from sprite sheet"
+                        "Could not get atlas to determine which part of sprite is currently active"
                     );
                     continue;
                 }
             } else {
-                error!("Could not get atlas to determine which part of sprite is currently active");
-                continue;
+                // No texture atlas, so go with the whole image.
+                let mesh_size = sprite.custom_size.unwrap_or(img.size().as_vec2());
+                (
+                    FlickerMaterial {
+                        source_image: Some(image_handle.clone()),
+                        color: e.color.into(),
+                        ..Default::default()
+                    },
+                    Mesh::from(Rectangle::new(mesh_size.x, mesh_size.y)),
+                )
             }
         } else if let Ok(mesh_handle) = mesh_components.get(e.entity) {
             if let Some(mesh) = meshes.get(&mesh_handle.0).cloned() {
@@ -135,19 +133,17 @@ pub(crate) fn flicker_start(
 
         if let Some(mut entity_commands) = commands.get_entity(e.entity) {
             entity_commands.with_children(|parent| {
-                parent
-                    .spawn(MaterialMesh2dBundle {
-                        material: flicker_materials.add(material),
-                        mesh: Mesh2dHandle(meshes.add(mesh)),
-                        transform: Transform {
-                            // Translation is relative to its parent, so 1.0 guarantees it is always in
-                            // front of its parent.
-                            translation: Vec3::new(0.0, 0.0, 1.0),
-                            ..Default::default()
-                        },
+                parent.spawn((
+                    MeshMaterial2d(flicker_materials.add(material)),
+                    Mesh2d(meshes.add(mesh)),
+                    Transform {
+                        // Translation is relative to its parent, so 1.0 guarantees it is always in
+                        // front of its parent.
+                        translation: Vec3::new(0.0, 0.0, 1.0),
                         ..Default::default()
-                    })
-                    .insert(Flickered::with_secs(e.secs));
+                    },
+                    Flickered::with_secs(e.secs),
+                ));
             });
             entity_commands.insert(FlickerMarker);
         }

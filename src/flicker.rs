@@ -1,10 +1,8 @@
 use bevy_asset::{Asset, Handle};
+use bevy_image::Image;
 use bevy_math::Vec2;
 use bevy_reflect::Reflect;
-use bevy_render::{
-    render_resource::{AsBindGroup, ShaderRef},
-    texture::Image,
-};
+use bevy_render::render_resource::{AsBindGroup, ShaderRef};
 
 use bevy_color::LinearRgba;
 
