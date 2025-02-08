@@ -23,6 +23,7 @@ bevy_hierarchy = "0.15.0"
 bevy_log = "0.15.0"
 bevy_transform = "0.15.0"
 bevy_color = "0.15.0"
+bevy_image = "0.15.0"
 
 [features]
 warnings = []
