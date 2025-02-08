@@ -1,4 +1,4 @@
-use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
+use bevy::prelude::*;
 use bevy_flicker::prelude::*;
 
 const FIXED_TIMESTEP: f64 = 1.0;
@@ -22,15 +22,13 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    commands.spawn(Camera2dBundle::default());
-    commands
-        .spawn(MaterialMesh2dBundle {
-            mesh: meshes.add(Mesh::from(Rectangle::default())).into(),
-            transform: Transform::default().with_scale(Vec3::splat(128.0)),
-            material: materials.add(ColorMaterial::from(Color::from(LinearRgba::RED))),
-            ..default()
-        })
-        .insert(Marker);
+    commands.spawn(Camera2d::default());
+    commands.spawn((
+        Mesh2d(meshes.add(Mesh::from(Rectangle::default()))),
+        Transform::default().with_scale(Vec3::splat(128.0)),
+        MeshMaterial2d(materials.add(ColorMaterial::from(Color::from(LinearRgba::RED)))),
+        Marker,
+    ));
 }
 
 fn tick(query: Query<Entity, With<Marker>>, mut event_writer: EventWriter<FlickerStartEvent>) {

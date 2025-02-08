@@ -13,7 +13,7 @@ fn main() {
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn(Camera2dBundle::default());
+    commands.spawn(Camera2d::default());
     for (repeating_flicker, x_pos) in [
         (repeating_flicker_1(), -256.0),
         (repeating_flicker_2(), 0.0),
@@ -22,11 +22,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         let mut transform = Transform::default().with_scale(Vec3::splat(4.0));
         transform.translation.x += x_pos;
         commands.spawn((
-            SpriteBundle {
-                texture: asset_server.load("asteroid5.png"),
-                transform,
-                ..default()
-            },
+            Sprite::from_image(asset_server.load("asteroid5.png")),
+            transform,
             Marker,
             repeating_flicker,
         ));

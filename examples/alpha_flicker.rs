@@ -18,13 +18,8 @@ fn main() {
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn(Camera2dBundle::default());
-    commands
-        .spawn(SpriteBundle {
-            texture: asset_server.load("alpha.png"),
-            ..default()
-        })
-        .insert(Marker);
+    commands.spawn(Camera2d::default());
+    commands.spawn((Sprite::from_image(asset_server.load("alpha.png")), Marker));
 }
 
 fn tick(query: Query<Entity, With<Marker>>, mut event_writer: EventWriter<FlickerStartEvent>) {
