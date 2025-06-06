@@ -8,7 +8,7 @@ use crate::{
 use bevy_ecs::{
     entity::Entity,
     event::{EventReader, EventWriter},
-    hierarchy::Children,
+    hierarchy::{ChildOf, Children},
     query::{With, Without},
     system::{Commands, Query, Res, ResMut},
 };
@@ -151,17 +151,17 @@ pub(crate) fn flicker_start(
 }
 
 pub(crate) fn flicker_tick(
-    mut flickered: Query<(&Parent, Entity, &mut Flickered)>,
+    mut flickered: Query<(&ChildOf, Entity, &mut Flickered)>,
     mut commands: Commands,
     time: Res<Time>,
 ) {
-    for (parent, entity, mut flickered) in flickered.iter_mut() {
+    for (child_of, entity, mut flickered) in flickered.iter_mut() {
         flickered.0.tick(time.delta());
         if flickered.0.finished() {
             if let Ok(mut entity_commands) = commands.get_entity(entity) {
                 entity_commands.despawn();
             }
-            if let Ok(mut entity_commands) = commands.get_entity(parent.get()) {
+            if let Ok(mut entity_commands) = commands.get_entity(child_of.0) {
                 entity_commands.remove::<FlickerMarker>();
             }
         }
