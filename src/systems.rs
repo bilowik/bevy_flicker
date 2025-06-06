@@ -180,7 +180,7 @@ pub(crate) fn repeating_flicker_tick(
             repeating_flicker.timer.tick(time.delta());
             if repeating_flicker.timer.just_finished() {
                 // The pause has finished, flicker again
-                flicker_start_event_writer.send(repeating_flicker.generate_start_event(entity));
+                flicker_start_event_writer.write(repeating_flicker.generate_start_event(entity));
                 repeating_flicker.curr_pulse_count -= 1;
                 if repeating_flicker.curr_pulse_count == 0 {
                     if let Some(count) = repeating_flicker.count.as_mut() {
