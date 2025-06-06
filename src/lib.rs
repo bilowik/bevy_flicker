@@ -32,7 +32,7 @@
 //! ```
 
 use bevy_app::{App, Plugin, Update};
-use bevy_ecs::schedule::{IntoSystemConfigs, SystemSet};
+use bevy_ecs::schedule::{IntoScheduleConfigs, SystemSet};
 
 use bevy_sprite::Material2dPlugin;
 
