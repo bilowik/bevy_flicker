@@ -54,7 +54,7 @@ fn tick(
         *counter = 0;
     }
     for e in query.iter() {
-        event_writer.send(
+        event_writer.write(
             FlickerStartEvent::builder(e)
                 .with_secs(FLICKER_LENGTH)
                 .with_color(RANDOM_COLORS[*counter])
