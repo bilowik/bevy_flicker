@@ -8,13 +8,6 @@ use bevy_color::LinearRgba;
 
 use bevy_sprite::{AlphaMode2d, Material2d};
 
-// Required for the AsBindGroup derive macro.
-mod bevy {
-    pub mod render {
-        pub use bevy_render::*;
-    }
-}
-
 #[derive(AsBindGroup, Clone, Reflect, Asset)]
 pub struct FlickerMaterial {
     #[texture(0)]

@@ -25,7 +25,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 fn tick(query: Query<Entity, With<Marker>>, mut event_writer: EventWriter<FlickerStartEvent>) {
     for e in query.iter() {
         info!("Flickering the square!");
-        event_writer.send(
+        event_writer.write(
             FlickerStartEvent::builder(e)
                 .with_secs(FLICKER_LENGTH)
                 .with_color(LinearRgba::new(1.0, 0.0, 0.0, 0.2).into())
