@@ -8,18 +8,18 @@ use crate::{
 use bevy_ecs::{
     entity::Entity,
     event::{EventReader, EventWriter},
+    hierarchy::Children,
     query::{With, Without},
     system::{Commands, Query, Res, ResMut},
 };
 use bevy_sprite::MeshMaterial2d;
 
 use bevy_asset::Assets;
-use bevy_hierarchy::{BuildChildren, ChildBuild, Children, Parent};
-use bevy_image::Image;
+use bevy_image::{Image, TextureAtlasLayout};
 use bevy_log::{error, warn};
 use bevy_math::{primitives::Rectangle, URect, Vec2, Vec3};
 use bevy_render::mesh::{Mesh, Mesh2d};
-use bevy_sprite::{Sprite, TextureAtlasLayout};
+use bevy_sprite::Sprite;
 use bevy_time::Time;
 use bevy_transform::components::Transform;
 
@@ -123,7 +123,7 @@ pub(crate) fn flicker_start(
                 // Iterate over the children and remove any flickers
                 for child in children {
                     if flicker_children.contains(*child) {
-                        if let Some(mut entity_commands) = commands.get_entity(*child) {
+                        if let Ok(mut entity_commands) = commands.get_entity(*child) {
                             entity_commands.despawn();
                         }
                     }
@@ -131,7 +131,7 @@ pub(crate) fn flicker_start(
             }
         }
 
-        if let Some(mut entity_commands) = commands.get_entity(e.entity) {
+        if let Ok(mut entity_commands) = commands.get_entity(e.entity) {
             entity_commands.with_children(|parent| {
                 parent.spawn((
                     MeshMaterial2d(flicker_materials.add(material)),
@@ -158,10 +158,10 @@ pub(crate) fn flicker_tick(
     for (parent, entity, mut flickered) in flickered.iter_mut() {
         flickered.0.tick(time.delta());
         if flickered.0.finished() {
-            if let Some(mut entity_commands) = commands.get_entity(entity) {
+            if let Ok(mut entity_commands) = commands.get_entity(entity) {
                 entity_commands.despawn();
             }
-            if let Some(mut entity_commands) = commands.get_entity(parent.get()) {
+            if let Ok(mut entity_commands) = commands.get_entity(parent.get()) {
                 entity_commands.remove::<FlickerMarker>();
             }
         }
@@ -189,7 +189,7 @@ pub(crate) fn repeating_flicker_tick(
                         *count -= 1;
                         if *count == 0 {
                             // We've finished flickering, remove.
-                            if let Some(mut entity_commands) = commands.get_entity(entity) {
+                            if let Ok(mut entity_commands) = commands.get_entity(entity) {
                                 entity_commands.remove::<RepeatingFlicker>();
                             }
                         }
