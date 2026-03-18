@@ -25,6 +25,7 @@ bevy_log = "0.17.0"
 bevy_transform = "0.17.0"
 bevy_color = "0.17.0"
 bevy_image = "0.17.0"
+bevy_mesh = "0.17.0"
 
 [features]
 warnings = []
