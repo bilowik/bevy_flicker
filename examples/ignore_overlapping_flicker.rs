@@ -46,7 +46,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 fn tick(
     query: Query<Entity, With<Marker>>,
-    mut event_writer: EventWriter<FlickerStartEvent>,
+    mut event_writer: MessageWriter<FlickerStartEvent>,
     mut counter: Local<usize>,
 ) {
     *counter = *counter + 1;

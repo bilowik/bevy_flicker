@@ -7,27 +7,29 @@ use crate::{
 
 use bevy_ecs::{
     entity::Entity,
-    event::{EventReader, EventWriter},
     hierarchy::{ChildOf, Children},
     query::{With, Without},
     system::{Commands, Query, Res, ResMut},
 };
-use bevy_sprite::MeshMaterial2d;
+use bevy_sprite_render::MeshMaterial2d;
+
+use bevy_ecs::message::{MessageWriter, MessageReader};
 
 use bevy_asset::Assets;
 use bevy_image::{Image, TextureAtlasLayout};
 use bevy_log::{error, warn};
 use bevy_math::{primitives::Rectangle, URect, Vec2, Vec3};
-use bevy_render::mesh::{Mesh, Mesh2d};
 use bevy_sprite::Sprite;
 use bevy_time::Time;
 use bevy_transform::components::Transform;
+
+use bevy_mesh::{Mesh2d, Mesh};
 
 pub(crate) fn flicker_start(
     sprites: Query<&Sprite, Without<NoFlicker>>,
     mesh_components: Query<&Mesh2d, Without<NoFlicker>>,
     mut flicker_materials: ResMut<Assets<FlickerMaterial>>,
-    mut flicker_start_events: EventReader<FlickerStartEvent>,
+    mut flicker_start_events: MessageReader<FlickerStartEvent>,
     mut meshes: ResMut<Assets<Mesh>>,
     images: Res<Assets<Image>>,
     atlas_layouts: Res<Assets<TextureAtlasLayout>>,
@@ -157,7 +159,7 @@ pub(crate) fn flicker_tick(
 ) {
     for (child_of, entity, mut flickered) in flickered.iter_mut() {
         flickered.0.tick(time.delta());
-        if flickered.0.finished() {
+        if flickered.0.is_finished() {
             if let Ok(mut entity_commands) = commands.get_entity(entity) {
                 entity_commands.despawn();
             }
@@ -170,7 +172,7 @@ pub(crate) fn flicker_tick(
 
 pub(crate) fn repeating_flicker_tick(
     mut repeating_flickers: Query<(Entity, &mut RepeatingFlicker)>,
-    mut flicker_start_event_writer: EventWriter<FlickerStartEvent>,
+    mut flicker_start_event_writer: MessageWriter<FlickerStartEvent>,
     mut commands: Commands,
     time: Res<Time>,
 ) {

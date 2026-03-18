@@ -34,7 +34,7 @@
 use bevy_app::{App, Plugin, Update};
 use bevy_ecs::schedule::{IntoScheduleConfigs, SystemSet};
 
-use bevy_sprite::Material2dPlugin;
+use bevy_sprite_render::Material2dPlugin;
 
 pub mod components;
 pub mod config;
@@ -74,7 +74,7 @@ impl Plugin for FlickerPlugin {
             .register_type::<FlickerMaterial>();
 
         // Register events
-        app.add_event::<FlickerStartEvent>();
+        app.add_message::<FlickerStartEvent>();
 
         // Register systems and systemset
         // TODO: These might need to be ordered to prevent conflicts potentially?

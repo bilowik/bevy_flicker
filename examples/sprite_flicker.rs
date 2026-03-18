@@ -27,7 +27,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     ));
 }
 
-fn tick(query: Query<Entity, With<Marker>>, mut event_writer: EventWriter<FlickerStartEvent>) {
+fn tick(query: Query<Entity, With<Marker>>, mut event_writer: MessageWriter<FlickerStartEvent>) {
     for e in query.iter() {
         info!("Flickering the square!");
         event_writer.write(
