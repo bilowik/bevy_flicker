@@ -1,8 +1,8 @@
-use bevy_ecs::{entity::Entity, event::Event};
+use bevy_ecs::{entity::Entity, message::Message};
 
 use bevy_color::Color;
 
-#[derive(Debug, Event)]
+#[derive(Debug, Message)]
 pub struct FlickerStartEvent {
     /// Entity to apply the flicker to
     pub entity: Entity,
